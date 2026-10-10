@@ -1,18 +1,27 @@
 {
-  "name": "کف بینی — AI Palm Reading",
-  "short_name": "کف بینی",
-  "description": "Traditional AI-assisted palm reading — scan your palm and get a detailed, beautifully presented reading.",
-  "start_url": "./?source=pwa",
-  "scope": "./",
+  "name": "Palmistry — کف بینی",
+  "short_name": "Palmistry",
+  "description": "روایتی علمِ کف شناسی کے مطابق تفصیلی palm reading — تفریحی و روایتی مقصد کے لیے۔",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0d1220",
   "theme_color": "#0d1220",
-  "lang": "ur",
   "dir": "rtl",
+  "lang": "ur",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }

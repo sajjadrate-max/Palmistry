@@ -16,7 +16,7 @@ palmistry-app/
 │   └── analyze.js       ← Serverless function (Vercel کے لیے) — اصل AI logic یہیں ہے
 ├── manifest.json         ← PWA manifest (ایپ کا نام، آئیکن، تھیم رنگ)
 ├── sw.js                 ← Service worker (Install / Add to Home Screen کے لیے)
-├── icons/                ← ایپ آئیکنز (192px, 512px, maskable, apple-touch)
+├── icon-192.png, icon-512.png, apple-touch-icon.png  ← ایپ آئیکنز (root پر)
 ├── package.json          ← Node dependencies
 ├── .env.example          ← environment variables کا نمونہ
 ├── .gitignore

@@ -4,16 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>Palmistry — کف بینی</title>
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon-192.png">
 <meta name="theme-color" content="#0d1220">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="کف بینی">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 <style>
   :root{
     --bg-deep:#0d1220;
@@ -177,56 +176,6 @@
     cursor:pointer;font-size:15px;
   }
 
-  /* MODE TOGGLE (Live Scan vs Upload) */
-  .mode-toggle{display:flex;gap:8px;margin-bottom:16px;}
-  .mode-toggle button{
-    flex:1;background:var(--bg-deep);border:1.5px solid var(--line);color:var(--ink-dim);
-    padding:10px 8px;border-radius:10px;font-size:13.5px;cursor:pointer;font-family:inherit;font-weight:600;
-  }
-  .mode-toggle button.active{border-color:var(--gold);color:var(--gold-bright);background:rgba(201,167,105,0.08);}
-
-  /* LIVE HAND SCAN */
-  .scan-wrap{
-    position:relative;border-radius:14px;overflow:hidden;background:#0a0e18;
-    aspect-ratio:3/4;max-height:520px;
-  }
-  .scan-wrap video, .scan-wrap canvas{
-    position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;
-  }
-  .scan-wrap video{transform:scaleX(1);}
-  .scan-idle{
-    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:14px;color:var(--ink-dim);text-align:center;padding:20px;
-  }
-  .scan-idle .icon{font-size:44px;}
-  .scan-status-bar{
-    position:absolute;bottom:0;left:0;right:0;padding:14px 16px 12px;
-    background:linear-gradient(0deg,rgba(0,0,0,0.7),transparent);
-    display:flex;flex-direction:column;gap:8px;
-  }
-  .scan-status-text{
-    color:#fff;font-size:14px;font-weight:600;font-family:'Inter',sans-serif;
-    text-shadow:0 1px 4px rgba(0,0,0,0.6);text-align:center;letter-spacing:0.4px;
-  }
-  .scan-progress-track{width:100%;height:4px;border-radius:999px;background:rgba(255,255,255,0.25);overflow:hidden;}
-  .scan-progress-fill{height:100%;width:0%;background:var(--gold-bright);border-radius:999px;transition:width .12s linear;}
-  .scan-progress-fill.analyzing{background:#5be0b0;}
-  .scan-top-bar{
-    position:absolute;top:0;left:0;right:0;padding:10px 14px;
-    background:linear-gradient(180deg,rgba(0,0,0,0.55),transparent);
-    display:flex;justify-content:space-between;align-items:center;
-  }
-  .scan-cancel{
-    background:rgba(13,18,32,0.65);color:#fff;border:1px solid rgba(255,255,255,0.3);
-    border-radius:999px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-    cursor:pointer;font-size:15px;
-  }
-  .scan-hint-badge{
-    background:rgba(13,18,32,0.55);color:#fff;border:1px solid rgba(255,255,255,0.25);
-    border-radius:999px;padding:5px 12px;font-size:12px;font-family:'Inter',sans-serif;
-  }
-  .scan-error{padding:16px;}
-
   /* LOADING */
   .loading-box{text-align:center;padding:38px 10px;}
   .spinner{
@@ -317,6 +266,7 @@
     padding:11px 8px;border-radius:10px;font-size:13.5px;cursor:pointer;font-family:inherit;
   }
   .tabbtn.active{border-color:var(--gold);color:var(--gold-bright);background:rgba(201,167,105,0.08);}
+
   /* INSTALL APP */
   .install-header-btn{
     display:none;align-items:center;gap:6px;background:var(--bg-panel);
@@ -340,7 +290,9 @@
     width:46px;height:46px;border-radius:12px;flex-shrink:0;
     background:var(--bg-deep);border:1px solid var(--line);
     display:flex;align-items:center;justify-content:center;font-size:22px;
+    overflow:hidden;
   }
+  .install-banner .ib-icon img{width:100%;height:100%;object-fit:cover;}
   .install-banner .ib-text{flex:1;min-width:0;}
   .install-banner .ib-title{font-size:13.5px;font-weight:700;color:var(--ink);font-family:'Inter',sans-serif;}
   .install-banner .ib-sub{font-size:12px;color:var(--muted);font-family:'Inter',sans-serif;margin-top:2px;}
@@ -379,7 +331,7 @@
 </header>
 
 <div class="install-banner" id="installBanner">
-  <div class="ib-icon">✋</div>
+  <div class="ib-icon"><img src="/icon-192.png" alt=""></div>
   <div class="ib-text">
     <div class="ib-title" data-i="installBannerTitle">اپنے ہوم اسکرین پر ایپ انسٹال کریں</div>
     <div class="ib-sub" data-i="installBannerSub">تیز رسائی، بغیر براؤزر کے کھولیں</div>
@@ -491,68 +443,32 @@
     <div class="panel" id="stepUpload">
       <h2><span class="num">3</span><span data-i="step2Title">ہتھیلی کی تصویر دیں</span></h2>
 
-      <div class="mode-toggle">
-        <button id="modeLiveBtn" class="active" onclick="setUploadMode('live')" data-i="liveScanTab">📡 لائیو ہینڈ اسکین</button>
-        <button id="modeFileBtn" onclick="setUploadMode('file')" data-i="uploadTab">🖼️ تصویر اپلوڈ کریں</button>
+      <div id="uploadZoneBox">
+        <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+          <span class="icon">📷</span>
+          <div data-i="uploadHint1">تصویر منتخب کرنے کے لیے یہاں دبائیں</div>
+          <div class="hint" data-i="uploadHint2">صاف روشنی میں، پوری ہتھیلی نظر آنی چاہیے</div>
+        </div>
+        <div class="upload-actions">
+          <button class="btn btn-outline btn-block" onclick="document.getElementById('cameraInput').click()">
+            <span>📸</span><span data-i="takePhoto">کیمرے سے تصویر لیں</span>
+          </button>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleFile(event)">
       </div>
 
-      <!-- LIVE SCAN MODE -->
-      <div id="liveScanMode">
-        <div class="scan-wrap" id="scanWrap">
-          <video id="liveVideo" playsinline muted></video>
-          <canvas id="scanCanvas"></canvas>
-
-          <div class="scan-idle" id="scanIdleOverlay">
-            <span class="icon">✋</span>
-            <p data-i="scanIdleText">اپنی ہتھیلی کیمرے کے سامنے، صاف روشنی میں رکھیں</p>
-            <button class="btn btn-gold" id="startScanBtn" onclick="startLiveScan()">
-              <span>▶️</span><span data-i="startScanBtn">اسکین شروع کریں</span>
-            </button>
-          </div>
-
-          <div class="scan-top-bar hidden" id="scanTopBar">
-            <span class="scan-hint-badge" id="scanHintBadge" data-i="scanStatusDetecting">ہاتھ تلاش کیا جا رہا ہے…</span>
-            <div class="scan-cancel" onclick="stopLiveScan()">✕</div>
-          </div>
-
-          <div class="scan-status-bar hidden" id="scanStatusBar">
-            <div class="scan-status-text" id="scanStatusText" data-i="scanStatusDetecting">ہاتھ تلاش کیا جا رہا ہے…</div>
-            <div class="scan-progress-track"><div class="scan-progress-fill" id="scanProgressFill"></div></div>
-          </div>
+      <div id="previewBox" class="hidden">
+        <div class="preview-wrap" id="previewWrap">
+          <img id="previewImg" src="" alt="palm preview">
+          <canvas id="annCanvas"></canvas>
+          <div class="remove-img" onclick="resetImage()">✕</div>
         </div>
-        <div id="scanErrorBox"></div>
         <div class="privacy-note" data-i="privacyNote">آپ کی تصویر صرف اس تجزیے کے لیے استعمال ہوگی اور مستقل طور پر سرور پر محفوظ نہیں کی جاتی۔</div>
-      </div>
-
-      <!-- FILE UPLOAD MODE -->
-      <div id="fileUploadMode" class="hidden">
-        <div id="uploadZoneBox">
-          <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
-            <span class="icon">📷</span>
-            <div data-i="uploadHint1">تصویر منتخب کرنے کے لیے یہاں دبائیں</div>
-            <div class="hint" data-i="uploadHint2">صاف روشنی میں، پوری ہتھیلی نظر آنی چاہیے</div>
-          </div>
-          <div class="upload-actions">
-            <button class="btn btn-outline btn-block" onclick="document.getElementById('cameraInput').click()">
-              <span>📸</span><span data-i="takePhoto">کیمرے سے تصویر لیں</span>
-            </button>
-          </div>
-          <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">
-          <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleFile(event)">
-        </div>
-
-        <div id="previewBox" class="hidden">
-          <div class="preview-wrap" id="previewWrap">
-            <img id="previewImg" src="" alt="palm preview">
-            <canvas id="annCanvas"></canvas>
-            <div class="remove-img" onclick="resetImage()">✕</div>
-          </div>
-          <div class="privacy-note" data-i="privacyNote">آپ کی تصویر صرف اس تجزیے کے لیے استعمال ہوگی اور مستقل طور پر سرور پر محفوظ نہیں کی جاتی۔</div>
-        </div>
       </div>
     </div>
 
-    <div class="panel hidden" id="stepAnalyze">
+    <div class="panel" id="stepAnalyze">
       <h2><span class="num">4</span><span data-i="step3Title">تجزیہ کروائیں</span></h2>
       <button class="btn btn-gold btn-block" id="analyzeBtn" onclick="analyzePalm()" disabled>
         <span>🔮</span><span data-i="analyzeBtnLbl">Palm Analyze کریں</span>
@@ -1252,275 +1168,6 @@ function escapeHtml(s){
 }
 
 /* ============================================================
-   MODE TOGGLE (Live Scan vs File Upload)
-   ============================================================ */
-function setUploadMode(mode){
-  document.getElementById('modeLiveBtn').classList.toggle('active', mode==='live');
-  document.getElementById('modeFileBtn').classList.toggle('active', mode==='file');
-  document.getElementById('liveScanMode').classList.toggle('hidden', mode!=='live');
-  document.getElementById('fileUploadMode').classList.toggle('hidden', mode!=='file');
-  document.getElementById('stepAnalyze').classList.toggle('hidden', mode==='live');
-  if(mode==='file'){
-    stopLiveScan();
-  }
-}
-
-/* ============================================================
-   LIVE HAND SCAN (MediaPipe Hands)
-   ============================================================ */
-let handsInstance = null;
-let mediaStream = null;
-let scanLoopActive = false;
-let scanRAFId = null;
-let scanState = 'idle'; // idle | detecting | scanning | analyzing
-let handPresentSince = null;
-let scanPhaseStart = null;
-let captureTriggered = false;
-
-const SCAN_HOLD_MS = 900;
-const SCAN_SCANNING_MS = 2200;
-const SCAN_ANALYZING_MS = 1400;
-
-async function startLiveScan(){
-  document.getElementById('scanErrorBox').innerHTML = '';
-  const video = document.getElementById('liveVideo');
-
-  try{
-    mediaStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 960 } },
-      audio: false
-    });
-  }catch(err){
-    console.error('getUserMedia error:', err);
-    showScanError(t('cameraErrorTitle'), t('cameraErrorMsg'));
-    return;
-  }
-
-  video.srcObject = mediaStream;
-  try{ await video.play(); }catch(e){ /* autoplay quirks are non-fatal here */ }
-
-  if(!handsInstance){
-    try{
-      await initHands();
-    }catch(err){
-      console.error('MediaPipe Hands init error:', err);
-      showScanError(t('cameraErrorTitle'), t('mediapipeErrorMsg'));
-      stopLiveScan();
-      return;
-    }
-  }
-
-  document.getElementById('scanIdleOverlay').classList.add('hidden');
-  document.getElementById('scanTopBar').classList.remove('hidden');
-  document.getElementById('scanStatusBar').classList.remove('hidden');
-
-  scanState = 'detecting';
-  handPresentSince = null;
-  scanPhaseStart = null;
-  captureTriggered = false;
-  setScanStatusText(t('scanStatusDetecting'));
-  setScanProgress(0, false);
-
-  scanLoopActive = true;
-  scanLoop();
-}
-
-function initHands(){
-  return new Promise((resolve, reject)=>{
-    try{
-      if(typeof Hands === 'undefined'){
-        reject(new Error('MediaPipe Hands script not loaded'));
-        return;
-      }
-      handsInstance = new Hands({
-        locateFile: (file)=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-      });
-      handsInstance.setOptions({
-        maxNumHands: 1,
-        modelComplexity: 0,
-        minDetectionConfidence: 0.6,
-        minTrackingConfidence: 0.5
-      });
-      handsInstance.onResults(onHandResults);
-      resolve();
-    }catch(e){ reject(e); }
-  });
-}
-
-function scanLoop(){
-  if(!scanLoopActive) return;
-  const video = document.getElementById('liveVideo');
-  if(video.readyState >= 2 && handsInstance){
-    handsInstance.send({ image: video }).catch(e=>console.error('Hands.send error:', e));
-  }
-  scanRAFId = requestAnimationFrame(scanLoop);
-}
-
-function onHandResults(results){
-  const canvas = document.getElementById('scanCanvas');
-  const video = document.getElementById('liveVideo');
-  if(!canvas || !video) return;
-  if(video.videoWidth && canvas.width !== video.videoWidth){
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-  }
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  const hasHand = !!(results.multiHandLandmarks && results.multiHandLandmarks.length > 0);
-  handleHandPresence(hasHand);
-
-  if(hasHand){
-    drawHandOutline(ctx, results.multiHandLandmarks[0], canvas.width, canvas.height);
-  }
-}
-
-function handleHandPresence(hasHand){
-  if(!scanLoopActive) return;
-  const now = performance.now();
-
-  if(scanState === 'detecting'){
-    if(hasHand){
-      if(!handPresentSince) handPresentSince = now;
-      setScanStatusText(t('scanStatusHold'));
-      const heldMs = now - handPresentSince;
-      setScanProgress(Math.min(100, (heldMs / SCAN_HOLD_MS) * 100), false);
-      if(heldMs >= SCAN_HOLD_MS){
-        scanState = 'scanning';
-        scanPhaseStart = now;
-        setScanStatusText(t('scanStatusScanning'));
-        setScanProgress(0, false);
-      }
-    }else{
-      handPresentSince = null;
-      setScanStatusText(t('scanStatusDetecting'));
-      setScanProgress(0, false);
-    }
-  }else if(scanState === 'scanning'){
-    if(!hasHand){
-      scanState = 'detecting';
-      handPresentSince = null;
-      setScanStatusText(t('scanStatusDetecting'));
-      setScanProgress(0, false);
-      return;
-    }
-    const elapsed = now - scanPhaseStart;
-    setScanProgress(Math.min(100, (elapsed / SCAN_SCANNING_MS) * 100), false);
-    if(elapsed >= SCAN_SCANNING_MS){
-      scanState = 'analyzing';
-      scanPhaseStart = now;
-      setScanStatusText(t('scanStatusAnalyzing'));
-      setScanProgress(0, true);
-    }
-  }else if(scanState === 'analyzing'){
-    const elapsed = now - scanPhaseStart;
-    setScanProgress(Math.min(100, (elapsed / SCAN_ANALYZING_MS) * 100), true);
-    if(elapsed >= SCAN_ANALYZING_MS && !captureTriggered){
-      captureTriggered = true;
-      finishLiveScan();
-    }
-  }
-}
-
-function drawHandOutline(ctx, landmarks, W, H){
-  let color = '#e8e6df';
-  if(scanState === 'scanning') color = '#e8c887';
-  else if(scanState === 'analyzing') color = '#5be0b0';
-
-  const seq = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,0];
-  const pts = seq.map(i=>({ x: landmarks[i].x * W, y: landmarks[i].y * H }));
-
-  ctx.save();
-  ctx.strokeStyle = color;
-  ctx.lineWidth = Math.max(2, W * 0.006);
-  ctx.lineJoin = 'round';
-  ctx.lineCap = 'round';
-  ctx.shadowColor = color;
-  ctx.shadowBlur = 8;
-  ctx.beginPath();
-  ctx.moveTo(pts[0].x, pts[0].y);
-  for(let i = 1; i < pts.length; i++){
-    const midX = (pts[i-1].x + pts[i].x) / 2;
-    const midY = (pts[i-1].y + pts[i].y) / 2;
-    ctx.quadraticCurveTo(pts[i-1].x, pts[i-1].y, midX, midY);
-  }
-  ctx.lineTo(pts[pts.length-1].x, pts[pts.length-1].y);
-  ctx.stroke();
-  ctx.restore();
-}
-
-function setScanStatusText(msg){
-  const badge = document.getElementById('scanHintBadge');
-  const status = document.getElementById('scanStatusText');
-  if(badge) badge.textContent = msg;
-  if(status) status.textContent = msg;
-}
-
-function setScanProgress(pct, analyzing){
-  const fill = document.getElementById('scanProgressFill');
-  if(!fill) return;
-  fill.style.width = pct + '%';
-  fill.classList.toggle('analyzing', !!analyzing);
-}
-
-function showScanError(title, msg){
-  document.getElementById('scanErrorBox').innerHTML =
-    `<div class="alert alert-warn scan-error"><span class="ic">⚠️</span><div><strong>${escapeHtml(title)}</strong><p style="margin:6px 0 0;">${escapeHtml(msg)}</p></div></div>`;
-}
-
-function finishLiveScan(){
-  const video = document.getElementById('liveVideo');
-  setScanStatusText(t('scanStatusCapturing'));
-
-  const off = document.createElement('canvas');
-  off.width = video.videoWidth || 720;
-  off.height = video.videoHeight || 960;
-  const octx = off.getContext('2d');
-  octx.drawImage(video, 0, 0, off.width, off.height);
-  const dataUrl = off.toDataURL('image/jpeg', 0.92);
-
-  uploadedBase64 = dataUrl;
-  uploadedMime = 'image/jpeg';
-
-  stopLiveScan();
-  clearError();
-  hideResults();
-  analyzePalm();
-}
-
-function stopLiveScan(){
-  scanLoopActive = false;
-  if(scanRAFId) cancelAnimationFrame(scanRAFId);
-  scanRAFId = null;
-
-  if(mediaStream){
-    mediaStream.getTracks().forEach(tr=>tr.stop());
-    mediaStream = null;
-  }
-  const video = document.getElementById('liveVideo');
-  if(video) video.srcObject = null;
-
-  const canvas = document.getElementById('scanCanvas');
-  if(canvas){
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-
-  const idleOverlay = document.getElementById('scanIdleOverlay');
-  const topBar = document.getElementById('scanTopBar');
-  const statusBar = document.getElementById('scanStatusBar');
-  if(idleOverlay) idleOverlay.classList.remove('hidden');
-  if(topBar) topBar.classList.add('hidden');
-  if(statusBar) statusBar.classList.add('hidden');
-
-  scanState = 'idle';
-  handPresentSince = null;
-  scanPhaseStart = null;
-  captureTriggered = false;
-  setScanProgress(0, false);
-}
-
-/* ============================================================
    ANALYZE
    ============================================================ */
 async function analyzePalm(){
@@ -1989,7 +1636,6 @@ async function handleInstallClick(){
     document.getElementById('iosInstallHelp').classList.remove('hidden');
     return;
   }
-  // No native prompt available and not iOS (already installed, or unsupported browser).
   document.getElementById('installBanner').classList.remove('show');
 }
 
@@ -2013,9 +1659,11 @@ if(!isRunningStandalone()){
   }
 }
 
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('sw.js').catch(err=>console.error('SW registration failed:', err));
+if('serviceWorker' in navigator && window.isSecureContext){
+  window.addEventListener('load', function(){
+    try{
+      navigator.serviceWorker.register('/sw.js').catch(function(){ /* silent */ });
+    }catch(e){ /* silent */ }
   });
 }
 
