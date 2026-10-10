@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>کف بینی — AI Palm Reading</title>
+<title>Palmistry — کف بینی</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -92,14 +92,6 @@
   }
   .hero h1{font-size:clamp(26px,6vw,38px);margin:0 0 12px;}
   .hero p.lead{color:var(--ink-dim);max-width:560px;margin:0 auto 22px;font-size:15.5px;}
-  .hand-svg-wrap{display:flex;justify-content:center;margin:8px auto 6px;}
-  .hand-svg-wrap svg{width:150px;height:auto;filter:drop-shadow(0 6px 18px rgba(201,167,105,0.25));}
-  .hand-line{fill:none;stroke-width:2.4;stroke-linecap:round;stroke-dasharray:300;stroke-dashoffset:300;animation:draw 2.4s ease forwards;}
-  .hand-outline{fill:rgba(239,233,218,0.04);stroke:rgba(239,233,218,0.35);stroke-width:1.4;}
-  @keyframes draw{to{stroke-dashoffset:0;}}
-  @media (prefers-reduced-motion: reduce){
-    .hand-line{animation:none;stroke-dashoffset:0;}
-  }
 
   /* CARD / PANEL */
   .panel{
@@ -116,6 +108,26 @@
     width:26px;height:26px;border-radius:50%;border:1px solid var(--gold);
     color:var(--gold-bright);font-size:13px;font-family:'Inter',sans-serif;flex-shrink:0;
   }
+  .collapsible-head{cursor:pointer;justify-content:flex-start;}
+  .collapsible-head .topic-current{
+    margin-inline-start:auto;font-size:13px;color:var(--gold);
+    font-family:'Inter',sans-serif;font-weight:400;
+  }
+  .collapsible-head .triangle{
+    color:var(--gold-bright);font-size:12px;transition:transform .15s;flex-shrink:0;
+  }
+
+  /* STEP: topic select */
+  .topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .topic-opt{
+    background:var(--bg-deep);border:1.5px solid var(--line);
+    border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .topic-opt.selected{border-color:var(--gold);background:rgba(201,167,105,0.08);}
+  .topic-opt .t-emoji{font-size:22px;display:block;margin-bottom:6px;}
+  .topic-opt .t-lbl{font-size:13.5px;color:var(--ink);}
+  .topic-note{font-size:12.5px;color:var(--muted);margin:12px 0 0;text-align:center;}
 
   /* STEP: hand select */
   .hand-select{display:flex;gap:12px;}
@@ -270,6 +282,10 @@
     border-radius:12px;padding:16px;font-size:13.5px;color:#f0d9d3;line-height:1.9;
   }
 
+  .ref-diagram-wrap{text-align:center;margin-bottom:16px;}
+  .ref-diagram-svg{width:100%;max-width:280px;height:auto;margin:0 auto;display:block;}
+  .ref-diagram-note{font-size:12.5px;color:var(--muted);margin-top:10px;max-width:420px;margin-inline:auto;}
+
   details.learn{
     border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px;
     background:rgba(255,255,255,0.015);
@@ -287,6 +303,12 @@
 
   .privacy-note{font-size:12.5px;color:var(--muted);margin-top:10px;text-align:center;}
 
+  .legend-box{
+    display:flex;flex-wrap:wrap;gap:10px 16px;justify-content:center;
+    margin-top:12px;padding-top:12px;border-top:1px solid var(--line);
+  }
+  .legend-item{font-size:12.5px;color:var(--ink-dim);display:inline-flex;align-items:center;}
+
   .hidden{display:none !important;}
 
   .tabbar{display:flex;gap:8px;margin:22px auto 12px;max-width:920px;padding:0 18px;}
@@ -295,7 +317,6 @@
     padding:11px 8px;border-radius:10px;font-size:13.5px;cursor:pointer;font-family:inherit;
   }
   .tabbtn.active{border-color:var(--gold);color:var(--gold-bright);background:rgba(201,167,105,0.08);}
-
   /* INSTALL APP */
   .install-header-btn{
     display:none;align-items:center;gap:6px;background:var(--bg-panel);
@@ -384,15 +405,6 @@
   <div class="eyebrow" data-i="eyebrow">TRADITIONAL PALMISTRY · AI ASSISTED</div>
   <h1 data-i="heroTitle">اپنے ہاتھ کی کہانی جانیے</h1>
   <p class="lead" data-i="heroLead">اپنی ہتھیلی کی صاف تصویر اپلوڈ کریں اور روایتی علمِ کف شناسی کے مطابق تفصیلی، خوبصورت انداز میں تجزیہ حاصل کریں۔ یہ محض روایتی و تفریحی تشریح ہے، سائنسی پیش گوئی نہیں۔</p>
-  <div class="hand-svg-wrap">
-    <svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
-      <path class="hand-outline" d="M70 230 C55 220 50 190 52 160 L48 90 C47 82 55 78 60 85 L65 120 L65 55 C65 47 74 44 78 52 L82 118 L82 40 C82 32 92 30 95 38 L98 120 L100 45 C100 37 110 36 112 45 L114 122 C120 100 132 92 138 100 C144 108 140 130 132 150 L128 190 C126 210 112 228 95 232 Z"/>
-      <path class="hand-line" d="M60 150 C75 145 90 148 100 158" stroke="#d9736c"/>
-      <path class="hand-line" d="M58 130 C78 128 96 132 112 128" stroke="#5b9bd9" style="animation-delay:.2s"/>
-      <path class="hand-line" d="M75 200 C68 175 68 150 78 128" stroke="#6cbf6c" style="animation-delay:.4s"/>
-      <path class="hand-line" d="M95 210 L92 130" stroke="#e0c341" style="animation-delay:.6s"/>
-    </svg>
-  </div>
 </section>
 
 <div class="tabbar">
@@ -405,8 +417,65 @@
   <!-- ============ READING TAB ============ -->
   <div id="viewReading">
 
+    <div class="panel" id="stepTopic">
+      <h2 class="collapsible-head" onclick="toggleTopicGrid()">
+        <span class="num">1</span><span data-i="step1Title">آپ کیا جاننا چاہتے ہیں؟</span>
+        <span class="topic-current" id="topicCurrentLbl">مکمل تجزیہ</span>
+        <span class="triangle" id="topicTriangle">▶</span>
+      </h2>
+      <div id="topicGridWrap" class="hidden">
+      <div class="topic-grid">
+        <div class="topic-opt selected" id="topicFull" onclick="selectTopic('full')">
+          <span class="t-emoji">📖</span>
+          <span class="t-lbl" data-i="topicFull">مکمل تجزیہ</span>
+        </div>
+        <div class="topic-opt" id="topicMarriage" onclick="selectTopic('marriage')">
+          <span class="t-emoji">💍</span>
+          <span class="t-lbl" data-i="topicMarriage">شادی / محبت</span>
+        </div>
+        <div class="topic-opt" id="topicHealth" onclick="selectTopic('health')">
+          <span class="t-emoji">🩺</span>
+          <span class="t-lbl" data-i="topicHealth">صحت کا رجحان</span>
+        </div>
+        <div class="topic-opt" id="topicFate" onclick="selectTopic('fate')">
+          <span class="t-emoji">⭐</span>
+          <span class="t-lbl" data-i="topicFate">قسمت / کیریئر</span>
+        </div>
+        <div class="topic-opt" id="topicWealth" onclick="selectTopic('wealth')">
+          <span class="t-emoji">💰</span>
+          <span class="t-lbl" data-i="topicWealth">مالی معاملات</span>
+        </div>
+        <div class="topic-opt" id="topicPersonality" onclick="selectTopic('personality')">
+          <span class="t-emoji">🌟</span>
+          <span class="t-lbl" data-i="topicPersonality">شخصیت</span>
+        </div>
+        <div class="topic-opt" id="topicTravel" onclick="selectTopic('travel')">
+          <span class="t-emoji">✈️</span>
+          <span class="t-lbl" data-i="topicTravel">سفر</span>
+        </div>
+        <div class="topic-opt" id="topicChildren" onclick="selectTopic('children')">
+          <span class="t-emoji">👶</span>
+          <span class="t-lbl" data-i="topicChildren">اولاد</span>
+        </div>
+        <div class="topic-opt" id="topicHandFingers" onclick="selectTopic('handFingers')">
+          <span class="t-emoji">✋</span>
+          <span class="t-lbl" data-i="topicHandFingers">ہاتھ اور انگلیوں کی ساخت</span>
+        </div>
+        <div class="topic-opt" id="topicMarks" onclick="selectTopic('marks')">
+          <span class="t-emoji">✳️</span>
+          <span class="t-lbl" data-i="topicMarks">خاص نشانات</span>
+        </div>
+        <div class="topic-opt" id="topicMounts" onclick="selectTopic('mounts')">
+          <span class="t-emoji">⛰️</span>
+          <span class="t-lbl" data-i="topicMounts">Mounts (ابھار)</span>
+        </div>
+      </div>
+      <p class="topic-note" data-i="topicNote">جو موضوع منتخب کریں گے، نتیجہ صرف اسی کے بارے میں تفصیل سے دکھایا جائے گا۔</p>
+      </div>
+    </div>
+
     <div class="panel" id="stepHand">
-      <h2><span class="num">1</span><span data-i="step1Title">ہاتھ منتخب کریں</span></h2>
+      <h2><span class="num">2</span><span data-i="step2TitleHand">ہاتھ منتخب کریں</span></h2>
       <div class="hand-select">
         <div class="hand-opt selected" id="optRight" onclick="selectHand('right')">
           <span class="emoji">🖐️</span>
@@ -420,7 +489,7 @@
     </div>
 
     <div class="panel" id="stepUpload">
-      <h2><span class="num">2</span><span data-i="step2Title">ہتھیلی کی تصویر دیں</span></h2>
+      <h2><span class="num">3</span><span data-i="step2Title">ہتھیلی کی تصویر دیں</span></h2>
 
       <div class="mode-toggle">
         <button id="modeLiveBtn" class="active" onclick="setUploadMode('live')" data-i="liveScanTab">📡 لائیو ہینڈ اسکین</button>
@@ -484,7 +553,7 @@
     </div>
 
     <div class="panel hidden" id="stepAnalyze">
-      <h2><span class="num">3</span><span data-i="step3Title">تجزیہ کروائیں</span></h2>
+      <h2><span class="num">4</span><span data-i="step3Title">تجزیہ کروائیں</span></h2>
       <button class="btn btn-gold btn-block" id="analyzeBtn" onclick="analyzePalm()" disabled>
         <span>🔮</span><span data-i="analyzeBtnLbl">Palm Analyze کریں</span>
       </button>
@@ -507,6 +576,36 @@
   <div id="viewLearn" class="hidden">
     <div class="panel">
       <h2>🖐️ <span data-i="learnLinesTitle">اہم لکیریں</span></h2>
+
+      <div class="ref-diagram-wrap">
+        <svg viewBox="0 0 480 560" xmlns="http://www.w3.org/2000/svg" class="ref-diagram-svg">
+          <!-- Palm -->
+          <polygon points="150,340 330,340 350,540 130,540" fill="none" stroke="#efe9da" stroke-width="2" opacity="0.6"/>
+          <!-- Fingers -->
+          <rect x="160" y="185" width="38" height="165" rx="18" fill="none" stroke="#efe9da" stroke-width="2" opacity="0.6"/>
+          <rect x="208" y="150" width="38" height="200" rx="18" fill="none" stroke="#efe9da" stroke-width="2" opacity="0.6"/>
+          <rect x="256" y="160" width="38" height="190" rx="18" fill="none" stroke="#efe9da" stroke-width="2" opacity="0.6"/>
+          <rect x="304" y="190" width="34" height="160" rx="17" fill="none" stroke="#efe9da" stroke-width="2" opacity="0.6"/>
+          <!-- Thumb -->
+          <rect x="75" y="300" width="75" height="70" rx="24" fill="none" stroke="#efe9da" stroke-width="2" opacity="0.6"/>
+
+          <!-- Heart Line -->
+          <path d="M160,365 C200,352 260,355 320,378" fill="none" stroke="#e05c52" stroke-width="5" stroke-linecap="round"/>
+          <!-- Head Line -->
+          <path d="M160,398 C215,412 275,428 315,442" fill="none" stroke="#4f8fd9" stroke-width="5" stroke-linecap="round"/>
+          <!-- Life Line -->
+          <path d="M160,365 C142,400 137,455 148,515" fill="none" stroke="#4fbf5e" stroke-width="5" stroke-linecap="round"/>
+          <!-- Fate Line -->
+          <path d="M240,520 C237,470 234,415 232,352" fill="none" stroke="#e0c341" stroke-width="5" stroke-linecap="round"/>
+
+          <!-- Labels -->
+          <text x="330" y="382" fill="#e05c52" font-size="20" font-family="Noto Nastaliq Urdu" text-anchor="start">لکیرِ دل</text>
+          <text x="322" y="448" fill="#4f8fd9" font-size="20" font-family="Noto Nastaliq Urdu" text-anchor="start">لکیرِ دماغ</text>
+          <text x="80" y="535" fill="#4fbf5e" font-size="20" font-family="Noto Nastaliq Urdu" text-anchor="start">لکیرِ حیات</text>
+          <text x="195" y="552" fill="#e0c341" font-size="20" font-family="Noto Nastaliq Urdu" text-anchor="start">لکیرِ مقدر</text>
+        </svg>
+        <p class="ref-diagram-note" data-i="refDiagramNote">یہ ایک عمومی رہنما خاکہ ہے — ہر ہاتھ پر لکیریں تقریباً انہی جگہوں پر ہوتی ہیں، اسی لیے یہ آپ کے اپنے ہاتھ پر یہ لکیریں پہچاننے میں مدد دے گا۔</p>
+      </div>
 
       <details class="learn" open>
         <summary><span class="line-dot dot-heart"></span><span data-i="heartLineName">Heart Line — لکیرِ دل</span></summary>
@@ -604,6 +703,214 @@
         <summary data-i="markTriangleName">△ Triangle</summary>
         <p data-i="markTriangleDesc">روایتی طور پر عقل اور مہارت کی علامت سمجھا جاتا ہے۔</p>
       </details>
+      <details class="learn">
+        <summary data-i="markCircleName">○ Circle</summary>
+        <p data-i="markCircleDesc">روایتی طور پر شہرت یا کامیابی کی علامت سمجھا جاتا ہے، خاص طور پر جب کسی مثبت لکیر کے ساتھ ہو۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="markDotName">● Dot</summary>
+        <p data-i="markDotDesc">روایتی طور پر کسی مختصر، اچانک واقعے یا جھٹکے کی علامت سمجھا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="markGrilleName">▦ Grille</summary>
+        <p data-i="markGrilleDesc">روایتی طور پر الجھن، بکھری توجہ یا اندرونی دباؤ کی علامت سمجھا جاتا ہے۔</p>
+      </details>
+    </div>
+
+    <div class="panel">
+      <h2>✌️ <span data-i="learnFingerShapesTitle">انگلیوں کی شکلیں</span></h2>
+      <details class="learn">
+        <summary data-i="shapeTaperedName">نوکیلا سرا (Tapered)</summary>
+        <p data-i="shapeTaperedDesc">روایتی طور پر حساسیت، فنکارانہ ذوق اور نرم مزاجی سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="shapeSquareName">چوکور (Square)</summary>
+        <p data-i="shapeSquareDesc">روایتی طور پر عملی پن، نظم و ضبط اور حقیقت پسندی سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="shapeSpatulateName">پھچا نما (Spatulate)</summary>
+        <p data-i="shapeSpatulateDesc">روایتی طور پر توانائی، عملی جدت اور بے چینی سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="shapeKnottedName">گرہ دار جوڑ (Knotted)</summary>
+        <p data-i="shapeKnottedDesc">روایتی طور پر تجزیاتی سوچ اور تفصیل پر توجہ سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="shapePointedName">تیز نوک (Pointed)</summary>
+        <p data-i="shapePointedDesc">روایتی طور پر تخیل، جذباتیت اور خوابیدہ طبیعت سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="phalanxTitle">انگلیوں کے تین حصے (Phalanges)</summary>
+        <p data-i="phalanxDesc">ہر انگلی تین حصوں پر مشتمل ہوتی ہے: اوپری حصہ (نوک کی طرف) روایتی طور پر روحانیت/سوچ سے، درمیانی حصہ عملی صلاحیت سے، اور بنیادی حصہ (ہتھیلی کے قریب) مادی رجحان اور جسمانی توانائی سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="fingerGapsTitle">انگلیوں کے درمیان فاصلہ</summary>
+        <p data-i="fingerGapsDesc">جب ہاتھ کھلا ہو تو انگلیوں کے درمیان زیادہ فاصلہ روایتی طور پر آزاد خیالی اور کھلے پن سے جوڑا جاتا ہے، عام فاصلہ متوازن طبیعت سے، اور بہت کم/کوئی فاصلہ نہ ہونا احتیاط پسندی اور ذمہ داری کے احساس سے جوڑا جاتا ہے۔</p>
+      </details>
+    </div>
+
+    <div class="panel">
+      <h2>👍 <span data-i="learnThumbTitle">انگوٹھے کی تفصیل</span></h2>
+      <details class="learn">
+        <summary data-i="thumbWillName">قوتِ ارادی (Will Power)</summary>
+        <p data-i="thumbWillDesc">انگوٹھے کا اوپری حصہ (نوک کی طرف) روایتی طور پر ارادے کی مضبوطی ظاہر کرتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="thumbLogicName">منطق (Logic)</summary>
+        <p data-i="thumbLogicDesc">انگوٹھے کا درمیانی حصہ روایتی طور پر سوچ اور استدلال کی صلاحیت سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="thumbFlexName">انگوٹھے کی لچک</summary>
+        <p data-i="thumbFlexDesc">لچکدار انگوٹھا روایتی طور پر مطابقت پذیری اور کھلے ذہن سے، جبکہ سخت انگوٹھا مضبوط موقف اور ثابت قدمی سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="thumbAngleName">انگوٹھے کا زاویہ</summary>
+        <p data-i="thumbAngleDesc">زیادہ کھلا زاویہ روایتی طور پر فراخ دلی اور سخاوت سے، جبکہ بند زاویہ محتاط اور محفوظ طبیعت سے جوڑا جاتا ہے۔</p>
+      </details>
+    </div>
+
+    <div class="panel">
+      <h2>✋ <span data-i="learnHandTypesTitle">ہاتھ کی اقسام</span></h2>
+      <details class="learn">
+        <summary data-i="handEarthName">زمینی ہاتھ (Earth Hand)</summary>
+        <p data-i="handEarthDesc">چوکور ہتھیلی، چھوٹی انگلیاں — روایتی طور پر عملی، محنتی اور مستحکم طبیعت سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="handAirName">ہوائی ہاتھ (Air Hand)</summary>
+        <p data-i="handAirDesc">چوکور ہتھیلی، لمبی انگلیاں — روایتی طور پر ذہانت، تجسس اور بات چیت کی مہارت سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="handFireName">آتشی ہاتھ (Fire Hand)</summary>
+        <p data-i="handFireDesc">لمبی ہتھیلی، چھوٹی انگلیاں — روایتی طور پر جوش، توانائی اور قائدانہ جذبے سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="handWaterName">آبی ہاتھ (Water Hand)</summary>
+        <p data-i="handWaterDesc">لمبی ہتھیلی، لمبی انگلیاں — روایتی طور پر حساسیت، تخیل اور جذباتی گہرائی سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="handTextureTitle">ہاتھ کی کیفیت (نرمی/سختی)</summary>
+        <p data-i="handTextureDesc">نرم ہاتھ روایتی طور پر حساس فطرت سے، معمولی/متوازن ہاتھ متوازن مزاج سے، اور سخت ہاتھ محنت پسند اور مضبوط عزم سے جوڑا جاتا ہے۔</p>
+      </details>
+    </div>
+
+    <div class="panel">
+      <h2>💅 <span data-i="learnNailsTitle">ناخنوں کے روایتی معنی</span></h2>
+      <details class="learn">
+        <summary data-i="nailNormalName">معمولی ناخن</summary>
+        <p data-i="nailNormalDesc">روایتی طور پر متوازن صحت اور مزاج کی علامت سمجھا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="nailLongName">لمبے ناخن</summary>
+        <p data-i="nailLongDesc">روایتی طور پر حساس اور فنکارانہ طبیعت سے جوڑے جاتے ہیں۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="nailShortName">چھوٹے ناخن</summary>
+        <p data-i="nailShortDesc">روایتی طور پر تنقیدی سوچ اور تفصیل پر توجہ سے جوڑے جاتے ہیں۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="nailWideName">چوڑے ناخن</summary>
+        <p data-i="nailWideDesc">روایتی طور پر صاف گو اور قدرے جلد رد عمل دینے والی طبیعت سے جوڑے جاتے ہیں۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="nailNarrowName">تنگ/باریک ناخن</summary>
+        <p data-i="nailNarrowDesc">روایتی طور پر محتاط اور کسی حد تک محفوظ طبیعت سے جوڑے جاتے ہیں۔</p>
+      </details>
+    </div>
+
+    <div class="panel">
+      <h2>〰️ <span data-i="learnLineTypesTitle">لکیروں کی اقسام (شکل کے اعتبار سے)</span></h2>
+      <details class="learn">
+        <summary data-i="lineTypeDeepName">گہری لکیر (Deep)</summary>
+        <p data-i="lineTypeDeepDesc">روایتی طور پر اس شعبے میں مضبوط اور واضح اثر کی علامت سمجھی جاتی ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="lineTypeLightName">ہلکی لکیر (Light)</summary>
+        <p data-i="lineTypeLightDesc">روایتی طور پر نرم یا کم واضح رجحان کی علامت سمجھی جاتی ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="lineTypeStraightName">سیدھی لکیر (Straight)</summary>
+        <p data-i="lineTypeStraightDesc">روایتی طور پر واضح، مستحکم رجحان کی علامت سمجھی جاتی ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="lineTypeCurvedName">خم دار لکیر (Curved)</summary>
+        <p data-i="lineTypeCurvedDesc">روایتی طور پر لچک دار اور جذباتی رجحان کی علامت سمجھی جاتی ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="lineTypeForkName">دوہرا سرا (Fork)</summary>
+        <p data-i="lineTypeForkDesc">روایتی طور پر انتخاب، دوہرے رجحان یا صلاحیتوں میں تنوع کی علامت سمجھی جاتی ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="lineTypeChainName">زنجیر نما (Chain)</summary>
+        <p data-i="lineTypeChainDesc">روایتی طور پر کسی دور میں الجھن یا غیر یقینی کیفیت کی علامت سمجھی جاتی ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="lineTypeIslandName">Island</summary>
+        <p data-i="lineTypeIslandDesc">روایتی طور پر کمزوری یا کسی مرحلے میں رکاوٹ کی علامت سمجھی جاتی ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="lineTypeBreakName">ٹوٹ (Break)</summary>
+        <p data-i="lineTypeBreakDesc">روایتی طور پر اچانک تبدیلی یا وقفے کی علامت سمجھی جاتی ہے۔</p>
+      </details>
+    </div>
+
+    <div class="panel">
+      <h2>☀️ <span data-i="learnMoreLinesTitle">مزید اہم لکیریں</span></h2>
+      <details class="learn">
+        <summary data-i="sunLineName2">Sun Line — لکیرِ شمس</summary>
+        <p data-i="sunLineDesc2">انگوٹھی والی انگلی کی طرف عمودی، روایتی طور پر شہرت، کامیابی اور عزت سے جوڑی جاتی ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="mercuryLineName2">Mercury/Health Line — لکیرِ صحت</summary>
+        <p data-i="mercuryLineDesc2">چھنگلیا کی طرف سے ہتھیلی میں آتی ہوئی، روایتی طور پر مواصلات اور کاروباری سوجھ بوجھ سے جوڑی جاتی ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="girdleVenusName">Girdle of Venus — حلقۂ زہرہ</summary>
+        <p data-i="girdleVenusDesc">دل کی لکیر کے اوپر، درمیانی اور انگوٹھی والی انگلی کے نیچے نیم دائرہ — روایتی طور پر شدید جذباتیت اور حساسیت سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="bracelettName">Bracelet/Rascette Lines — کلائی کی لکیریں</summary>
+        <p data-i="braceletDesc">کلائی پر افقی لکیریں — روایتی طور پر عمومی توانائی اور زندگی کے مختلف ادوار سے جوڑی جاتی ہیں۔</p>
+      </details>
+    </div>
+
+    <div class="panel">
+      <h2>💍 <span data-i="learnMarriageChildTitle">شادی اور اولاد کی لکیریں</span></h2>
+      <details class="learn">
+        <summary data-i="marriageLinesName2">شادی کی لکیریں (Marriage Lines)</summary>
+        <p data-i="marriageLinesDesc2">چھنگلیا کے نیچے، دل کی لکیر کے اوپر چھوٹی افقی لکیریں — روایتی طور پر تعلقات کی نوعیت اور اہمیت سے جوڑی جاتی ہیں۔ ان کی تعداد رشتوں کی یقینی تعداد نہیں بتاتی۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="childrenLinesName2">اولاد کی لکیریں (Children Lines)</summary>
+        <p data-i="childrenLinesDesc2">شادی کی لکیروں کے قریب چھوٹی عمودی لکیریں — روایتی طور پر خاندان سے جوڑی جاتی ہیں۔ یہ اولاد کی یقینی تعداد یا جنس نہیں بتاتیں — پامسٹری اس کا سائنسی تعین نہیں کر سکتی۔</p>
+      </details>
+    </div>
+
+    <div class="panel">
+      <h2>✈️ <span data-i="learnTravelTitle">سفر کی علامات</span></h2>
+      <details class="learn">
+        <summary data-i="travelLinesName2">Travel Lines — سفر کی لکیریں</summary>
+        <p data-i="travelLinesDesc2">ہتھیلی کے کنارے سے اندر کی طرف آتی چھوٹی لکیریں — روایتی طور پر سفر کے رجحان یا اہم دوری کے سفروں سے جوڑی جاتی ہیں۔</p>
+      </details>
+    </div>
+
+    <div class="panel">
+      <h2>🔗 <span data-i="learnInteractionsTitle">لکیروں کا آپس میں تعلق</span></h2>
+      <details class="learn">
+        <summary data-i="interactHeartHeadName">دل اور دماغ کی لکیر ملی ہوئی</summary>
+        <p data-i="interactHeartHeadDesc">روایتی طور پر جذبات اور سوچ کے ملاپ، اور فیصلوں میں احتیاط سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="interactSeparateName">دل اور دماغ کی لکیر الگ الگ</summary>
+        <p data-i="interactSeparateDesc">روایتی طور پر آزاد خیالی اور جذبات و سوچ میں واضح فرق سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="interactCloseName">دماغ اور حیات کی لکیر قریب/جڑی ہوئی</summary>
+        <p data-i="interactCloseDesc">روایتی طور پر محتاط طبیعت اور سوچ سمجھ کر قدم اٹھانے سے جوڑا جاتا ہے۔</p>
+      </details>
+      <details class="learn">
+        <summary data-i="interactWideName">دماغ اور حیات کی لکیر کے درمیان فاصلہ</summary>
+        <p data-i="interactWideDesc">روایتی طور پر خود اعتمادی اور آزادانہ فیصلہ سازی سے جوڑا جاتا ہے۔</p>
+      </details>
     </div>
   </div>
 
@@ -623,7 +930,13 @@ const I18N = {
     heroTitle:"اپنے ہاتھ کی کہانی جانیے",
     heroLead:"اپنی ہتھیلی کی صاف تصویر اپلوڈ کریں اور روایتی علمِ کف شناسی کے مطابق تفصیلی، خوبصورت انداز میں تجزیہ حاصل کریں۔ یہ محض روایتی و تفریحی تشریح ہے، سائنسی پیش گوئی نہیں۔",
     tabReading:"کف بینی کروائیں", tabLearn:"علمِ کف شناسی سیکھیں",
-    step1Title:"ہاتھ منتخب کریں", rightHand:"دایاں ہاتھ", leftHand:"بایاں ہاتھ",
+    step1Title:"آپ کیا جاننا چاہتے ہیں؟",
+    topicFull:"مکمل تجزیہ", topicMarriage:"شادی / محبت", topicHealth:"صحت کا رجحان",
+    topicFate:"قسمت / کیریئر", topicWealth:"مالی معاملات", topicPersonality:"شخصیت",
+    topicTravel:"سفر", topicChildren:"اولاد", topicHandFingers:"ہاتھ اور انگلیوں کی ساخت",
+    topicMarks:"خاص نشانات", topicMounts:"Mounts (ابھار)",
+    topicNote:"جو موضوع منتخب کریں گے، نتیجہ صرف اسی کے بارے میں تفصیل سے دکھایا جائے گا۔",
+    step2TitleHand:"ہاتھ منتخب کریں", rightHand:"دایاں ہاتھ", leftHand:"بایاں ہاتھ",
     step2Title:"ہتھیلی کی تصویر دیں",
     uploadHint1:"تصویر منتخب کرنے کے لیے یہاں دبائیں",
     uploadHint2:"صاف روشنی میں، پوری ہتھیلی نظر آنی چاہیے",
@@ -648,12 +961,13 @@ const I18N = {
     resultTitleMarks:"خاص نشانات", resultTitleMarriage:"شادی سے متعلق",
     resultTitleChildren:"اولاد سے متعلق", resultTitlePersonality:"مجموعی شخصیت",
     resultTitleCareer:"کیریئر / کاروبار", resultTitleRelationships:"محبت / تعلقات",
-    resultTitleWealth:"مالی معاملات", resultTitleAnnotated:"نشان زدہ تصویر",
-    notVisible:"واضح نہیں", annotationLowNote:"تصویر پر نشانات لگانے کے لیے اعتماد کم ہے، اس لیے صرف تحریری نتیجہ دکھایا جا رہا ہے۔",
+    resultTitleWealth:"مالی معاملات", resultTitleAnnotated:"آپ کی تصویر",
+    notVisible:"واضح نہیں",
+    dotsLowNote:"لکیروں کے شروع/اختتام کے نقطے لگانے کے لیے اعتماد کافی نہیں تھا، اس لیے صرف تحریری نتیجہ دکھایا جا رہا ہے۔",
     fThumb:"انگوٹھا", fIndex:"شہادت (Jupiter)", fMiddle:"درمیانی (Saturn)", fRing:"انگوٹھی والی (Apollo)", fLittle:"چھنگلیا (Mercury)",
     lStart:"آغاز", lEnd:"اختتام", lLength:"لمبائی", lDepth:"گہرائی/وضاحت", lShape:"شکل",
     lBreaks:"ٹوٹ (Breaks)", lBranches:"شاخیں", lForks:"دوہرا سرا (Forks)", lIslands:"Islands", lCrosses:"Crosses", lChains:"Chains",
-    lInterp:"روایتی تشریح",
+    lInterp:"روایتی تشریح", lRelation:"دیگر لکیروں سے تعلق",
     liveScanTab:"📡 لائیو ہینڈ اسکین", uploadTab:"🖼️ تصویر اپلوڈ کریں",
     scanIdleText:"اپنی ہتھیلی کیمرے کے سامنے، صاف روشنی میں رکھیں",
     startScanBtn:"اسکین شروع کریں",
@@ -674,11 +988,17 @@ const I18N = {
     installedMsg:"ایپ کامیابی سے انسٹال ہو گئی!"
   },
   en: {
-    brandName:"Palm Reading", eyebrow:"TRADITIONAL PALMISTRY · AI ASSISTED",
+    brandName:"Palmistry", eyebrow:"TRADITIONAL PALMISTRY · AI ASSISTED",
     heroTitle:"Discover the Story in Your Hand",
     heroLead:"Upload a clear photo of your palm and get a detailed, beautifully presented reading based on traditional palmistry. This is a traditional / entertainment interpretation, not a scientific prediction.",
     tabReading:"Get a Reading", tabLearn:"Learn Palmistry",
-    step1Title:"Select Your Hand", rightHand:"Right Hand", leftHand:"Left Hand",
+    step1Title:"What would you like to know?",
+    topicFull:"Full Reading", topicMarriage:"Marriage / Love", topicHealth:"Health Tendency",
+    topicFate:"Fate / Career", topicWealth:"Money / Wealth", topicPersonality:"Personality",
+    topicTravel:"Travel", topicChildren:"Children", topicHandFingers:"Hand & Finger Shape",
+    topicMarks:"Special Marks", topicMounts:"Mounts",
+    topicNote:"Whichever topic you choose, the result will focus in detail only on that.",
+    step2TitleHand:"Select Your Hand", rightHand:"Right Hand", leftHand:"Left Hand",
     step2Title:"Provide a Palm Photo",
     uploadHint1:"Tap here to choose a photo",
     uploadHint2:"Use good lighting, whole palm visible",
@@ -703,12 +1023,13 @@ const I18N = {
     resultTitleMarks:"Special Marks", resultTitleMarriage:"Marriage",
     resultTitleChildren:"Children", resultTitlePersonality:"Overall Personality",
     resultTitleCareer:"Career / Business", resultTitleRelationships:"Love / Relationships",
-    resultTitleWealth:"Money / Wealth", resultTitleAnnotated:"Annotated Image",
-    notVisible:"Not visible", annotationLowNote:"Confidence for marking the image is low, so only the written result is shown.",
+    resultTitleWealth:"Money / Wealth", resultTitleAnnotated:"Your Photo",
+    notVisible:"Not visible",
+    dotsLowNote:"Confidence for placing the line start/end markers wasn't high enough, so only the written result is shown.",
     fThumb:"Thumb", fIndex:"Index (Jupiter)", fMiddle:"Middle (Saturn)", fRing:"Ring (Apollo)", fLittle:"Little (Mercury)",
     lStart:"Start", lEnd:"End", lLength:"Length", lDepth:"Depth/Clarity", lShape:"Shape",
     lBreaks:"Breaks", lBranches:"Branches", lForks:"Forks", lIslands:"Islands", lCrosses:"Crosses", lChains:"Chains",
-    lInterp:"Traditional Interpretation",
+    lInterp:"Traditional Interpretation", lRelation:"Relation to Other Lines",
     liveScanTab:"📡 Live Hand Scan", uploadTab:"🖼️ Upload Photo",
     scanIdleText:"Hold your palm in front of the camera, in good light",
     startScanBtn:"Start Scan",
@@ -729,6 +1050,40 @@ const I18N = {
     installedMsg:"App installed successfully!"
   }
 };
+/* Labels for values whose JSON key gets shown as a heading/label in the
+   UI (secondary line names, mounts sub-labels, personality/career/
+   relationships/wealth field names, etc.) — without this map these
+   would fall back to a prettified English key regardless of language. */
+const FIELD_LABELS = {
+  ur: {
+    thickness:"موٹائی", spacing:"فاصلہ", level:"سطح", location:"مقام",
+    sun_line:"سورج کی لکیر", health_line:"صحت کی لکیر", marriage_lines:"شادی کی لکیریں",
+    travel_lines:"سفر کی لکیریں", influence_lines:"اثر کی لکیریں", bracelets:"کلائی کی لکیریں",
+    confidence_trait:"اعتماد", communication:"بات چیت", emotional_style:"جذباتی انداز",
+    decision_making:"فیصلہ سازی", creativity:"تخلیقی صلاحیت", leadership:"قیادت",
+    tendencies:"رجحان", business_tendency:"کاروباری رجحان", communication_work:"مواصلاتی کام",
+    creative_work:"تخلیقی کام", stability_vs_change:"استحکام بمقابلہ تبدیلی",
+    emotional_nature:"جذباتی فطرت", attachment_style:"لگاؤ کا انداز",
+    financial_tendencies:"مالی رجحان", stability:"استحکام", risk_taking:"خطرہ مول لینا",
+    business_inclination:"کاروباری رجحان"
+  },
+  en: {
+    thickness:"Thickness", spacing:"Spacing", level:"Level", location:"Location",
+    sun_line:"Sun Line", health_line:"Health Line", marriage_lines:"Marriage Lines",
+    travel_lines:"Travel Lines", influence_lines:"Influence Lines", bracelets:"Bracelets",
+    confidence_trait:"Confidence", communication:"Communication", emotional_style:"Emotional Style",
+    decision_making:"Decision Making", creativity:"Creativity", leadership:"Leadership",
+    tendencies:"Tendencies", business_tendency:"Business Tendency", communication_work:"Communication Work",
+    creative_work:"Creative Work", stability_vs_change:"Stability vs Change",
+    emotional_nature:"Emotional Nature", attachment_style:"Attachment Style",
+    financial_tendencies:"Financial Tendencies", stability:"Stability", risk_taking:"Risk Taking",
+    business_inclination:"Business Inclination"
+  }
+};
+function trField(key){
+  return (FIELD_LABELS[currentLang] && FIELD_LABELS[currentLang][key]) || prettify(key);
+}
+
 let currentLang = 'ur';
 
 function setLang(l){
@@ -742,6 +1097,11 @@ function setLang(l){
     const key = el.getAttribute('data-i');
     if(I18N[l][key]) el.innerHTML = I18N[l][key];
   });
+  const curLbl = document.getElementById('topicCurrentLbl');
+  if(curLbl && typeof selectedTopic !== 'undefined'){
+    const key = 'topic' + selectedTopic.charAt(0).toUpperCase() + selectedTopic.slice(1);
+    if(I18N[l][key]) curLbl.textContent = I18N[l][key];
+  }
 }
 
 function t(key){ return I18N[currentLang][key] || key; }
@@ -757,6 +1117,32 @@ function showTab(name){
 }
 
 /* ============================================================
+   TOPIC SELECT
+   ============================================================ */
+let selectedTopic = 'full';
+const TOPIC_IDS = ['full','marriage','health','fate','wealth','personality','travel','children','handFingers','marks','mounts'];
+
+function toggleTopicGrid(){
+  const wrap = document.getElementById('topicGridWrap');
+  const tri = document.getElementById('topicTriangle');
+  const isHidden = wrap.classList.contains('hidden');
+  wrap.classList.toggle('hidden', !isHidden);
+  tri.textContent = isHidden ? '▼' : '▶';
+}
+
+function selectTopic(topic){
+  selectedTopic = topic;
+  TOPIC_IDS.forEach(function(id){
+    const el = document.getElementById('topic' + id.charAt(0).toUpperCase() + id.slice(1));
+    if(el) el.classList.toggle('selected', id===topic);
+  });
+  document.getElementById('topicCurrentLbl').textContent = t('topic' + topic.charAt(0).toUpperCase() + topic.slice(1));
+  // collapse the grid back after a choice is made
+  document.getElementById('topicGridWrap').classList.add('hidden');
+  document.getElementById('topicTriangle').textContent = '▶';
+}
+
+/* ============================================================
    HAND SELECT
    ============================================================ */
 let selectedHand = 'right';
@@ -767,9 +1153,10 @@ function selectHand(h){
 }
 
 /* ============================================================
-   IMAGE UPLOAD
+   IMAGE UPLOAD (with client-side compression to stay under
+   the platform's request-size limit for the /api/analyze call)
    ============================================================ */
-let uploadedBase64 = null; // full data URL
+let uploadedBase64 = null; // full data URL (JPEG, resized)
 let uploadedMime = null;
 
 function handleFile(evt){
@@ -779,18 +1166,58 @@ function handleFile(evt){
     showError(t('errBadImage'));
     return;
   }
-  const reader = new FileReader();
-  reader.onload = function(e){
-    uploadedBase64 = e.target.result;
-    uploadedMime = file.type;
+  compressImage(file, 1800, 0.85).then(function(dataUrl){
+    uploadedBase64 = dataUrl;
+    uploadedMime = 'image/jpeg';
     document.getElementById('previewImg').src = uploadedBase64;
     document.getElementById('uploadZoneBox').classList.add('hidden');
     document.getElementById('previewBox').classList.remove('hidden');
     document.getElementById('analyzeBtn').disabled = false;
     clearError();
     hideResults();
-  };
-  reader.readAsDataURL(file);
+  }).catch(function(err){
+    console.error('Image compression error:', err);
+    showError(t('errBadImage'));
+  });
+}
+
+/**
+ * Resizes an image file down to a maximum width/height (preserving
+ * aspect ratio) and re-encodes it as JPEG at the given quality,
+ * returning a data URL. This keeps the base64 payload sent to the
+ * backend well under the platform's request size limit, since raw
+ * phone-camera photos (often 4000px+, several MB) would otherwise
+ * be rejected before the analysis ever runs.
+ */
+function compressImage(file, maxDimension, quality){
+  return new Promise(function(resolve, reject){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      const img = new Image();
+      img.onload = function(){
+        let w = img.width, h = img.height;
+        if(w > maxDimension || h > maxDimension){
+          if(w > h){
+            h = Math.round(h * (maxDimension / w));
+            w = maxDimension;
+          }else{
+            w = Math.round(w * (maxDimension / h));
+            h = maxDimension;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 function resetImage(){
@@ -1116,6 +1543,7 @@ async function analyzePalm(){
       body: JSON.stringify({
         image: uploadedBase64,
         hand: selectedHand,
+        topic: selectedTopic,
         language: currentLang
       }),
       signal: controller.signal
@@ -1174,39 +1602,74 @@ function renderResults(data){
     return;
   }
 
-  // Annotated image
+  // Uploaded image with optional start/end dot markers (no drawn lines)
   html += `<div class="panel">
     <h2>🖼️ <span>${t('resultTitleAnnotated')}</span></h2>
     <div class="preview-wrap" id="resultImgWrap">
       <img id="resultImg" src="${uploadedBase64}">
       <canvas id="resultCanvas"></canvas>
     </div>
-    ${(!data.annotation_confidence || data.annotation_confidence==='none' || data.annotation_confidence==='low')
-      ? `<p class="privacy-note" style="margin-top:10px;">${t('annotationLowNote')}</p>` : ''}
+    <div id="dotLegend"></div>
   </div>`;
 
-  html += cardSimple('✋', t('resultTitleHandType'), renderHandType(data.hand_type));
-  html += cardSimple('✌️', t('resultTitleFingers'), renderFingers(data.fingers));
-  html += cardSimple('👍', t('resultTitleThumb'), renderKV(data.thumb, ['length','width','flexibility','upper_phalanx','lower_phalanx','meaning'],
+  // Which sections to show, based on the topic the user picked
+  const topic = selectedTopic || 'full';
+  const show = {
+    handType: topic==='full' || topic==='personality' || topic==='handFingers',
+    fingers: topic==='full' || topic==='handFingers',
+    thumb: topic==='full' || topic==='handFingers',
+    lines: topic==='full' || topic==='marriage' || topic==='health' || topic==='fate',
+    secondary: topic==='full' || topic==='marriage' || topic==='health' || topic==='travel',
+    mounts: topic==='full' || topic==='mounts',
+    marks: topic==='full' || topic==='marks',
+    marriage: topic==='full' || topic==='marriage',
+    children: topic==='full' || topic==='marriage' || topic==='children',
+    personality: topic==='full' || topic==='personality',
+    career: topic==='full' || topic==='fate' || topic==='wealth',
+    relationships: topic==='full' || topic==='marriage' || topic==='personality',
+    wealth: topic==='full' || topic==='wealth'
+  };
+
+  if(show.handType) html += cardSimple('✋', t('resultTitleHandType'), renderHandType(data.hand_type));
+  if(show.fingers) html += cardSimple('✌️', t('resultTitleFingers'), renderFingers(data.fingers));
+  if(show.thumb) html += cardSimple('👍', t('resultTitleThumb'), renderKV(data.thumb, ['length','width','flexibility','upper_phalanx','lower_phalanx','meaning'],
     {length:'lLength',width:'lLength',flexibility:'lShape',upper_phalanx:'lShape',lower_phalanx:'lShape',meaning:'lInterp'}));
 
-  html += `<div class="panel"><h2>🔮 <span>${t('resultTitleLines')}</span></h2>
-    ${renderLine('dot-heart', currentLang==='ur'?'Heart Line — لکیرِ دل':'Heart Line', data.heart_line)}
-    ${renderLine('dot-head', currentLang==='ur'?'Head Line — لکیرِ دماغ':'Head Line', data.head_line)}
-    ${renderLine('dot-life', currentLang==='ur'?'Life Line — لکیرِ حیات':'Life Line', data.life_line)}
-    ${renderLine('dot-fate', currentLang==='ur'?'Fate Line — لکیرِ مقدر':'Fate Line', data.fate_line)}
-  </div>`;
+  if(show.lines){
+    // For a focused topic, only show the specific line(s) relevant to it
+    const lineFilter = {
+      full: ['heart','head','life','fate'],
+      marriage: ['heart'],
+      health: ['life','head'],
+      fate: ['fate','head']
+    };
+    const linesToShow = lineFilter[topic] || ['heart','head','life','fate'];
+    let linesHtml = '';
+    if(linesToShow.includes('heart')) linesHtml += renderLine('dot-heart', currentLang==='ur'?'Heart Line — لکیرِ دل':'Heart Line', data.heart_line);
+    if(linesToShow.includes('head')) linesHtml += renderLine('dot-head', currentLang==='ur'?'Head Line — لکیرِ دماغ':'Head Line', data.head_line);
+    if(linesToShow.includes('life')) linesHtml += renderLine('dot-life', currentLang==='ur'?'Life Line — لکیرِ حیات':'Life Line', data.life_line);
+    if(linesToShow.includes('fate')) linesHtml += renderLine('dot-fate', currentLang==='ur'?'Fate Line — لکیرِ مقدر':'Fate Line', data.fate_line);
+    html += `<div class="panel"><h2>🔮 <span>${t('resultTitleLines')}</span></h2>${linesHtml}</div>`;
+  }
 
-  html += cardSimple('〰️', t('resultTitleSecondary'), renderSecondary(data.secondary_lines));
-  html += cardSimple('⛰️', t('resultTitleMounts'), renderMounts(data.mounts));
-  html += cardSimple('✳️', t('resultTitleMarks'), renderMarks(data.special_marks));
-  html += cardSimple('💍', t('resultTitleMarriage'), renderKV(data.marriage, ['lines_count','description','shape','forks_breaks'],
+  if(show.secondary){
+    const secondaryFilter = {
+      marriage: ['marriage_lines'],
+      health: ['health_line'],
+      travel: ['travel_lines']
+    };
+    const onlyKeys = secondaryFilter[topic] || null; // null = show all (full reading)
+    html += cardSimple('〰️', t('resultTitleSecondary'), renderSecondary(data.secondary_lines, onlyKeys));
+  }
+  if(show.mounts) html += cardSimple('⛰️', t('resultTitleMounts'), renderMounts(data.mounts));
+  if(show.marks) html += cardSimple('✳️', t('resultTitleMarks'), renderMarks(data.special_marks));
+  if(show.marriage) html += cardSimple('💍', t('resultTitleMarriage'), renderKV(data.marriage, ['lines_count','description','shape','forks_breaks'],
     {lines_count:'lLength',description:'lInterp',shape:'lShape',forks_breaks:'lForks'}));
-  html += cardSimple('👶', t('resultTitleChildren'), renderChildren(data.children));
-  html += cardSimple('🌟', t('resultTitlePersonality'), renderFreeText(data.personality));
-  html += cardSimple('💼', t('resultTitleCareer'), renderFreeText(data.career));
-  html += cardSimple('❤️', t('resultTitleRelationships'), renderFreeText(data.relationships));
-  html += cardSimple('💰', t('resultTitleWealth'), renderFreeText(data.wealth));
+  if(show.children) html += cardSimple('👶', t('resultTitleChildren'), renderChildren(data.children));
+  if(show.personality) html += cardSimple('🌟', t('resultTitlePersonality'), renderFreeText(data.personality));
+  if(show.career) html += cardSimple('💼', t('resultTitleCareer'), renderFreeText(data.career));
+  if(show.relationships) html += cardSimple('❤️', t('resultTitleRelationships'), renderFreeText(data.relationships));
+  if(show.wealth) html += cardSimple('💰', t('resultTitleWealth'), renderFreeText(data.wealth));
 
   html += `<div class="panel disclaimer-box">
     ${escapeHtml(data.disclaimer || defaultDisclaimer())}
@@ -1222,9 +1685,9 @@ function renderResults(data){
   box.innerHTML = html;
   box.scrollIntoView({behavior:'smooth'});
 
-  // draw annotations after image loads
+  // draw start/end dot markers once the image has loaded
   const img = document.getElementById('resultImg');
-  const drawFn = ()=>drawAnnotations(data);
+  const drawFn = ()=>drawDotMarkers(data);
   if(img.complete) drawFn(); else img.onload = drawFn;
 }
 
@@ -1257,9 +1720,9 @@ function renderFingers(f){
     out += `<div class="subcard">
       <div class="row-title">${t(labelKey)} ${confBadge(fi.confidence)}</div>
       ${fi.length?`<p><span class="k">${t('lLength')}:</span> ${escapeHtml(fi.length)}</p>`:''}
-      ${fi.thickness?`<p><span class="k">Thickness:</span> ${escapeHtml(fi.thickness)}</p>`:''}
+      ${fi.thickness?`<p><span class="k">${trField('thickness')}:</span> ${escapeHtml(fi.thickness)}</p>`:''}
       ${fi.shape?`<p><span class="k">${t('lShape')}:</span> ${escapeHtml(fi.shape)}</p>`:''}
-      ${fi.spacing?`<p><span class="k">Spacing:</span> ${escapeHtml(fi.spacing)}</p>`:''}
+      ${fi.spacing?`<p><span class="k">${trField('spacing')}:</span> ${escapeHtml(fi.spacing)}</p>`:''}
       ${fi.meaning?`<p><span class="k">${t('lInterp')}:</span> ${escapeHtml(fi.meaning)}</p>`:''}
     </div>`;
   });
@@ -1294,20 +1757,21 @@ function renderLine(dotClass, title, line){
   fields.forEach(([k,labelKey])=>{
     if(line[k]) out += `<p><span class="k">${t(labelKey)}:</span> ${escapeHtml(line[k])}</p>`;
   });
-  if(line.relation_to_other_lines) out += `<p><span class="k">Relation:</span> ${escapeHtml(line.relation_to_other_lines)}</p>`;
+  if(line.relation_to_other_lines) out += `<p><span class="k">${t('lRelation')}:</span> ${escapeHtml(line.relation_to_other_lines)}</p>`;
   if(line.interpretation) out += `<p><span class="k">${t('lInterp')}:</span> ${escapeHtml(line.interpretation)}</p>`;
   out += `</div>`;
   return out;
 }
 
-function renderSecondary(sec){
+function renderSecondary(sec, onlyKeys){
   if(!sec) return `<p>${t('notVisible')}</p>`;
   let out = '';
   Object.keys(sec).forEach(key=>{
+    if(onlyKeys && !onlyKeys.includes(key)) return;
     const item = sec[key];
     if(!item) return;
     out += `<div class="subcard">
-      <div class="row-title">${escapeHtml(prettify(key))} ${confBadge(item.confidence)}</div>
+      <div class="row-title">${escapeHtml(trField(key))} ${confBadge(item.confidence)}</div>
       <p>${escapeHtml(item.description || item.interpretation || t('notVisible'))}</p>
     </div>`;
   });
@@ -1322,7 +1786,7 @@ function renderMounts(m){
     if(!item) return;
     out += `<div class="subcard">
       <div class="row-title">${escapeHtml(prettify(key))} ${confBadge(item.confidence)}</div>
-      ${item.level?`<p><span class="k">Level:</span> ${escapeHtml(item.level)}</p>`:''}
+      ${item.level?`<p><span class="k">${trField('level')}:</span> ${escapeHtml(item.level)}</p>`:''}
       ${item.meaning?`<p><span class="k">${t('lInterp')}:</span> ${escapeHtml(item.meaning)}</p>`:''}
     </div>`;
   });
@@ -1335,7 +1799,7 @@ function renderMarks(marks){
   marks.forEach(mk=>{
     out += `<div class="subcard">
       <div class="row-title">${escapeHtml(mk.type||'')} ${confBadge(mk.confidence)}</div>
-      ${mk.location?`<p><span class="k">Location:</span> ${escapeHtml(mk.location)}</p>`:''}
+      ${mk.location?`<p><span class="k">${trField('location')}:</span> ${escapeHtml(mk.location)}</p>`:''}
       ${mk.meaning?`<p><span class="k">${t('lInterp')}:</span> ${escapeHtml(mk.meaning)}</p>`:''}
     </div>`;
   });
@@ -1356,7 +1820,7 @@ function renderFreeText(obj){
   let out = `<div class="subcard">`;
   Object.keys(obj).forEach(k=>{
     if(k==='confidence') return;
-    out += `<p><span class="k">${escapeHtml(prettify(k))}:</span> ${escapeHtml(obj[k])}</p>`;
+    out += `<p><span class="k">${escapeHtml(trField(k))}:</span> ${escapeHtml(obj[k])}</p>`;
   });
   if(obj.confidence) out = out.replace('<div class="subcard">', `<div class="subcard"><div class="row-title">${confBadge(obj.confidence)}</div>`);
   out += `</div>`;
@@ -1366,20 +1830,10 @@ function renderFreeText(obj){
 function prettify(key){
   return key.replace(/_/g,' ').replace(/\b\w/g, c=>c.toUpperCase());
 }
-
-function defaultDisclaimer(){
-  return currentLang==='ur'
-    ? "یہ reading روایتی پامسٹری کی تشریحات پر مبنی ہے۔ پامسٹری سائنسی طور پر مستقبل کی پیش گوئی، بیماری کی تشخیص، fertility، اولاد کی تعداد یا جنس، موت کی عمر یا مالی کامیابی کی ضمانت دینے کا ثابت شدہ طریقہ نہیں ہے۔ اسے صرف روایتی/تفریحی interpretation سمجھیں۔"
-    : "This reading is based on traditional palmistry interpretations. Palmistry is not a scientifically proven method for predicting the future, diagnosing illness, fertility, the number or gender of children, age of death, or guaranteed financial success. Please treat it as traditional / entertainment interpretation only.";
-}
-
 /* ============================================================
-   CANVAS ANNOTATIONS
+   DOT MARKERS (start + end point only, never a full traced line)
    ============================================================ */
-function drawAnnotations(data){
-  const conf = data.annotation_confidence;
-  if(!conf || conf === 'none' || conf === 'low') return; // do not draw fake lines
-
+function drawDotMarkers(data){
   const img = document.getElementById('resultImg');
   const canvas = document.getElementById('resultCanvas');
   if(!img || !canvas) return;
@@ -1390,48 +1844,55 @@ function drawAnnotations(data){
 
   const W = canvas.width, H = canvas.height;
   const colorMap = { heart_line:'#e05c52', head_line:'#4f8fd9', life_line:'#4fbf5e', fate_line:'#e0c341' };
+  const nameKeys = { heart_line:'legendHeart', head_line:'legendHead', life_line:'legendLife', fate_line:'legendFate' };
+  const r = Math.max(6, W*0.016);
+  const usedLines = [];
 
   ['heart_line','head_line','life_line','fate_line'].forEach(key=>{
     const line = data[key];
-    if(line && Array.isArray(line.points) && line.points.length>=2){
-      ctx.beginPath();
-      ctx.lineWidth = Math.max(2, W*0.006);
-      ctx.strokeStyle = colorMap[key];
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      line.points.forEach((p,i)=>{
+    if(line && line.start_point && line.end_point &&
+       typeof line.start_point.x === 'number' && typeof line.end_point.x === 'number'){
+      [line.start_point, line.end_point].forEach(p=>{
         const x = p.x*W, y = p.y*H;
-        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        ctx.beginPath();
+        ctx.arc(x,y,r,0,2*Math.PI);
+        ctx.fillStyle = colorMap[key];
+        ctx.fill();
+        ctx.lineWidth = Math.max(2, W*0.003);
+        ctx.strokeStyle = '#ffffff';
+        ctx.stroke();
       });
-      ctx.stroke();
+      usedLines.push(key);
     }
   });
 
-  if(data.mounts){
-    Object.keys(data.mounts).forEach(key=>{
-      const mo = data.mounts[key];
-      if(mo && mo.point && typeof mo.point.x==='number'){
-        const x = mo.point.x*W, y = mo.point.y*H;
-        ctx.beginPath();
-        ctx.arc(x,y,Math.max(4,W*0.012),0,2*Math.PI);
-        ctx.strokeStyle = '#c9a769';
-        ctx.lineWidth = Math.max(1.5,W*0.003);
-        ctx.stroke();
-      }
-    });
+  // Build a small legend under the image for whichever lines actually got dots
+  const legendBox = document.getElementById('dotLegend');
+  if(legendBox){
+    if(usedLines.length === 0){
+      legendBox.innerHTML = `<p class="privacy-note" style="margin-top:10px;">${t('dotsLowNote')}</p>`;
+    } else {
+      let html = '<div class="legend-box">';
+      const dotClassMap = { heart_line:'dot-heart', head_line:'dot-head', life_line:'dot-life', fate_line:'dot-fate' };
+      const labelMap = {
+        heart_line: currentLang==='ur' ? 'دل کی لکیر' : 'Heart Line',
+        head_line: currentLang==='ur' ? 'دماغ کی لکیر' : 'Head Line',
+        life_line: currentLang==='ur' ? 'حیات کی لکیر' : 'Life Line',
+        fate_line: currentLang==='ur' ? 'مقدر کی لکیر' : 'Fate Line',
+      };
+      usedLines.forEach(key=>{
+        html += `<span class="legend-item"><span class="line-dot ${dotClassMap[key]}"></span>${labelMap[key]}</span>`;
+      });
+      html += '</div>';
+      legendBox.innerHTML = html;
+    }
   }
+}
 
-  if(Array.isArray(data.special_marks)){
-    data.special_marks.forEach(mk=>{
-      if(mk.point && typeof mk.point.x==='number'){
-        const x = mk.point.x*W, y = mk.point.y*H;
-        ctx.beginPath();
-        ctx.arc(x,y,Math.max(3,W*0.008),0,2*Math.PI);
-        ctx.fillStyle = 'rgba(224,122,107,0.85)';
-        ctx.fill();
-      }
-    });
-  }
+function defaultDisclaimer(){
+  return currentLang==='ur'
+    ? "یہ reading روایتی پامسٹری کی تشریحات پر مبنی ہے۔ پامسٹری سائنسی طور پر مستقبل کی پیش گوئی، بیماری کی تشخیص، fertility، اولاد کی تعداد یا جنس، موت کی عمر یا مالی کامیابی کی ضمانت دینے کا ثابت شدہ طریقہ نہیں ہے۔ اسے صرف روایتی/تفریحی interpretation سمجھیں۔"
+    : "This reading is based on traditional palmistry interpretations. Palmistry is not a scientifically proven method for predicting the future, diagnosing illness, fertility, the number or gender of children, age of death, or guaranteed financial success. Please treat it as traditional / entertainment interpretation only.";
 }
 
 /* ============================================================
