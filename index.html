@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>Palmistry — کف بینی</title>
 <link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon-192.png">
 <meta name="theme-color" content="#0d1220">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -265,6 +266,50 @@
     padding:11px 8px;border-radius:10px;font-size:13.5px;cursor:pointer;font-family:inherit;
   }
   .tabbtn.active{border-color:var(--gold);color:var(--gold-bright);background:rgba(201,167,105,0.08);}
+
+  /* INSTALL APP */
+  .install-header-btn{
+    display:none;align-items:center;gap:6px;background:var(--bg-panel);
+    border:1px solid var(--gold);color:var(--gold-bright);
+    border-radius:999px;padding:7px 14px;font-size:12.5px;cursor:pointer;
+    font-family:'Inter',sans-serif;font-weight:600;white-space:nowrap;
+  }
+  .install-header-btn.show{display:inline-flex;}
+
+  .install-banner{
+    position:fixed;left:12px;right:12px;bottom:12px;z-index:500;
+    max-width:520px;margin:0 auto;
+    background:linear-gradient(180deg,var(--bg-panel-2),var(--bg-panel));
+    border:1px solid var(--gold);border-radius:16px;
+    box-shadow:0 12px 34px rgba(0,0,0,0.5);
+    padding:14px;display:flex;align-items:center;gap:12px;
+    transform:translateY(140%);transition:transform .3s ease;
+  }
+  .install-banner.show{transform:translateY(0);}
+  .install-banner .ib-icon{
+    width:46px;height:46px;border-radius:12px;flex-shrink:0;
+    background:var(--bg-deep);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:22px;
+    overflow:hidden;
+  }
+  .install-banner .ib-icon img{width:100%;height:100%;object-fit:cover;}
+  .install-banner .ib-text{flex:1;min-width:0;}
+  .install-banner .ib-title{font-size:13.5px;font-weight:700;color:var(--ink);font-family:'Inter',sans-serif;}
+  .install-banner .ib-sub{font-size:12px;color:var(--muted);font-family:'Inter',sans-serif;margin-top:2px;}
+  .install-banner .ib-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .install-banner .ib-install{
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:#1a1305;
+    border:none;border-radius:999px;padding:9px 16px;font-size:13px;font-weight:700;
+    cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;
+  }
+  .install-banner .ib-close{
+    background:transparent;border:none;color:var(--muted);font-size:16px;cursor:pointer;
+    width:26px;height:26px;flex-shrink:0;
+  }
+
+  .ios-install-help{
+    position:fixed;left:12px;right:12px;bottom:12px;z-index:500;max-width:480px;margin:0 auto;
+  }
 </style>
 </head>
 <body>
@@ -274,11 +319,39 @@
     <div class="brand-mark">✋</div>
     <div class="brand-name" data-i="brandName">کف بینی</div>
   </div>
-  <div class="lang-toggle">
-    <button id="btnUr" class="active" onclick="setLang('ur')">اردو</button>
-    <button id="btnEn" onclick="setLang('en')">EN</button>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="install-header-btn" id="installHeaderBtn" onclick="handleInstallClick()">
+      <span>📲</span><span data-i="installAppBtn">ایپ Install کریں</span>
+    </button>
+    <div class="lang-toggle">
+      <button id="btnUr" class="active" onclick="setLang('ur')">اردو</button>
+      <button id="btnEn" onclick="setLang('en')">EN</button>
+    </div>
   </div>
 </header>
+
+<div class="install-banner" id="installBanner">
+  <div class="ib-icon"><img src="/icon-192.png" alt=""></div>
+  <div class="ib-text">
+    <div class="ib-title" data-i="installBannerTitle">اپنے ہوم اسکرین پر ایپ انسٹال کریں</div>
+    <div class="ib-sub" data-i="installBannerSub">تیز رسائی، بغیر براؤزر کے کھولیں</div>
+  </div>
+  <div class="ib-actions">
+    <button class="ib-install" onclick="handleInstallClick()" data-i="installBannerBtn">Install</button>
+    <button class="ib-close" onclick="dismissInstallBanner()">✕</button>
+  </div>
+</div>
+
+<div class="ios-install-help hidden" id="iosInstallHelp">
+  <div class="alert alert-info" style="align-items:center;">
+    <span class="ic">📲</span>
+    <div style="flex:1;">
+      <strong data-i="iosInstallTitle">آئی فون پر انسٹال کرنے کا طریقہ</strong>
+      <p style="margin:6px 0 0;" data-i="iosInstallSteps">نیچے Share بٹن ⬆️ دبائیں، پھر "Add to Home Screen" منتخب کریں۔</p>
+    </div>
+    <button class="ib-close" onclick="document.getElementById('iosInstallHelp').classList.add('hidden')">✕</button>
+  </div>
+</div>
 
 <section class="hero wrap">
   <div class="eyebrow" data-i="eyebrow">TRADITIONAL PALMISTRY · AI ASSISTED</div>
@@ -810,7 +883,25 @@ const I18N = {
     fThumb:"انگوٹھا", fIndex:"شہادت (Jupiter)", fMiddle:"درمیانی (Saturn)", fRing:"انگوٹھی والی (Apollo)", fLittle:"چھنگلیا (Mercury)",
     lStart:"آغاز", lEnd:"اختتام", lLength:"لمبائی", lDepth:"گہرائی/وضاحت", lShape:"شکل",
     lBreaks:"ٹوٹ (Breaks)", lBranches:"شاخیں", lForks:"دوہرا سرا (Forks)", lIslands:"Islands", lCrosses:"Crosses", lChains:"Chains",
-    lInterp:"روایتی تشریح", lRelation:"دیگر لکیروں سے تعلق"
+    lInterp:"روایتی تشریح", lRelation:"دیگر لکیروں سے تعلق",
+    liveScanTab:"📡 لائیو ہینڈ اسکین", uploadTab:"🖼️ تصویر اپلوڈ کریں",
+    scanIdleText:"اپنی ہتھیلی کیمرے کے سامنے، صاف روشنی میں رکھیں",
+    startScanBtn:"اسکین شروع کریں",
+    scanStatusDetecting:"ہاتھ تلاش کیا جا رہا ہے…",
+    scanStatusHold:"ہاتھ کو ساکن رکھیں…",
+    scanStatusScanning:"لکیریں اسکین ہو رہی ہیں…",
+    scanStatusAnalyzing:"تجزیہ ہو رہا ہے…",
+    scanStatusCapturing:"تصویر لی جا رہی ہے…",
+    cameraErrorTitle:"کیمرہ استعمال نہیں ہو سکا",
+    cameraErrorMsg:"کیمرے تک رسائی نہیں مل سکی۔ براہ کرم کیمرہ اجازت دیں یا 'تصویر اپلوڈ کریں' آپشن استعمال کریں۔",
+    mediapipeErrorMsg:"لائیو اسکین لوڈ نہیں ہو سکا۔ براہ کرم 'تصویر اپلوڈ کریں' آپشن استعمال کریں۔",
+    installAppBtn:"ایپ Install کریں",
+    installBannerTitle:"اپنے ہوم اسکرین پر ایپ انسٹال کریں",
+    installBannerSub:"تیز رسائی، بغیر براؤزر کے کھولیں",
+    installBannerBtn:"Install",
+    iosInstallTitle:"آئی فون پر انسٹال کرنے کا طریقہ",
+    iosInstallSteps:"نیچے Share بٹن ⬆️ دبائیں، پھر \"Add to Home Screen\" منتخب کریں۔",
+    installedMsg:"ایپ کامیابی سے انسٹال ہو گئی!"
   },
   en: {
     brandName:"Palmistry", eyebrow:"TRADITIONAL PALMISTRY · AI ASSISTED",
@@ -854,7 +945,25 @@ const I18N = {
     fThumb:"Thumb", fIndex:"Index (Jupiter)", fMiddle:"Middle (Saturn)", fRing:"Ring (Apollo)", fLittle:"Little (Mercury)",
     lStart:"Start", lEnd:"End", lLength:"Length", lDepth:"Depth/Clarity", lShape:"Shape",
     lBreaks:"Breaks", lBranches:"Branches", lForks:"Forks", lIslands:"Islands", lCrosses:"Crosses", lChains:"Chains",
-    lInterp:"Traditional Interpretation", lRelation:"Relation to Other Lines"
+    lInterp:"Traditional Interpretation", lRelation:"Relation to Other Lines",
+    liveScanTab:"📡 Live Hand Scan", uploadTab:"🖼️ Upload Photo",
+    scanIdleText:"Hold your palm in front of the camera, in good light",
+    startScanBtn:"Start Scan",
+    scanStatusDetecting:"Looking for your hand…",
+    scanStatusHold:"Hold your hand steady…",
+    scanStatusScanning:"Scanning your palm lines…",
+    scanStatusAnalyzing:"Analyzing…",
+    scanStatusCapturing:"Capturing image…",
+    cameraErrorTitle:"Couldn't access camera",
+    cameraErrorMsg:"Camera access failed. Please allow camera permission, or use the 'Upload Photo' option instead.",
+    mediapipeErrorMsg:"Live scan could not load. Please use the 'Upload Photo' option instead.",
+    installAppBtn:"Install App",
+    installBannerTitle:"Install the app on your home screen",
+    installBannerSub:"Faster access, opens without the browser",
+    installBannerBtn:"Install",
+    iosInstallTitle:"How to install on iPhone",
+    iosInstallSteps:"Tap the Share button ⬆️ below, then choose \"Add to Home Screen\".",
+    installedMsg:"App installed successfully!"
   }
 };
 /* Labels for values whose JSON key gets shown as a heading/label in the
@@ -1472,14 +1581,84 @@ function startNewReading(){
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
-/* init */
-setLang('ur');
+/* ============================================================
+   PWA INSTALL (Add to Home Screen)
+   ============================================================ */
+let deferredInstallPrompt = null;
+const INSTALL_DISMISS_KEY = 'palmistry_install_dismissed_at';
+const INSTALL_DISMISS_DAYS = 7;
 
-/* Register service worker so the browser recognizes this as an
-   installable PWA and offers "Add to Home Screen" / "Install App".
-   Wrapped defensively so it never surfaces a warning in restricted
-   preview environments (e.g. sandboxed iframes) where sw.js isn't
-   reachable — on the real deployed site this registers normally. */
+function isRunningStandalone(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function isIOS(){
+  return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+}
+
+function wasRecentlyDismissed(){
+  const raw = localStorage.getItem(INSTALL_DISMISS_KEY);
+  if(!raw) return false;
+  const days = (Date.now() - Number(raw)) / (1000*60*60*24);
+  return days < INSTALL_DISMISS_DAYS;
+}
+
+function showInstallHeaderBtn(){
+  const btn = document.getElementById('installHeaderBtn');
+  if(btn) btn.classList.add('show');
+}
+
+function showInstallBanner(){
+  if(isRunningStandalone() || wasRecentlyDismissed()) return;
+  const banner = document.getElementById('installBanner');
+  if(banner) banner.classList.add('show');
+}
+
+function dismissInstallBanner(){
+  const banner = document.getElementById('installBanner');
+  if(banner) banner.classList.remove('show');
+  localStorage.setItem(INSTALL_DISMISS_KEY, String(Date.now()));
+}
+
+async function handleInstallClick(){
+  if(deferredInstallPrompt){
+    document.getElementById('installBanner').classList.remove('show');
+    deferredInstallPrompt.prompt();
+    try{
+      await deferredInstallPrompt.userChoice;
+    }catch(e){ /* ignore */ }
+    deferredInstallPrompt = null;
+    document.getElementById('installHeaderBtn').classList.remove('show');
+    return;
+  }
+  if(isIOS()){
+    document.getElementById('installBanner').classList.remove('show');
+    document.getElementById('iosInstallHelp').classList.remove('hidden');
+    return;
+  }
+  document.getElementById('installBanner').classList.remove('show');
+}
+
+if(!isRunningStandalone()){
+  window.addEventListener('beforeinstallprompt', (e)=>{
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    showInstallHeaderBtn();
+    setTimeout(showInstallBanner, 1500);
+  });
+
+  window.addEventListener('appinstalled', ()=>{
+    deferredInstallPrompt = null;
+    document.getElementById('installBanner').classList.remove('show');
+    document.getElementById('installHeaderBtn').classList.remove('show');
+  });
+
+  if(isIOS()){
+    showInstallHeaderBtn();
+    setTimeout(showInstallBanner, 1500);
+  }
+}
+
 if('serviceWorker' in navigator && window.isSecureContext){
   window.addEventListener('load', function(){
     try{
@@ -1487,6 +1666,9 @@ if('serviceWorker' in navigator && window.isSecureContext){
     }catch(e){ /* silent */ }
   });
 }
+
+/* init */
+setLang('ur');
 </script>
 </body>
 </html>

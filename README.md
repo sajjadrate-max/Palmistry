@@ -14,11 +14,23 @@ palmistry-app/
 ├── server.js            ← Express backend (local testing / کسی بھی Node host کے لیے)
 ├── api/
 │   └── analyze.js       ← Serverless function (Vercel کے لیے) — اصل AI logic یہیں ہے
+├── manifest.json         ← PWA manifest (ایپ کا نام، آئیکن، تھیم رنگ)
+├── sw.js                 ← Service worker (Install / Add to Home Screen کے لیے)
+├── icon-192.png, icon-512.png, apple-touch-icon.png  ← ایپ آئیکنز (root پر)
 ├── package.json          ← Node dependencies
 ├── .env.example          ← environment variables کا نمونہ
 ├── .gitignore
 └── README.md             ← یہی فائل
 ```
+
+### Install App (PWA)
+
+یہ ویب ایپ اب ایک Progressive Web App بھی ہے — یعنی صارف اسے اپنے فون/کمپیوٹر کے ہوم اسکرین پر عام موبائل ایپ کی طرح انسٹال کر سکتا ہے:
+
+- Android/Chrome پر: ہیڈر میں "📲 ایپ Install کریں" بٹن یا نیچے سے نمودار ہونے والا install banner دکھایا جاتا ہے۔
+- iPhone/Safari پر: چونکہ iOS خودکار install prompt نہیں دیتا، بٹن دبانے پر "Share → Add to Home Screen" کی ہدایات دکھائی جاتی ہیں۔
+- انسٹال کے بعد ایپ الگ ونڈو میں، بغیر براؤزر بار کے کھلتی ہے۔
+- یہ صرف HTTPS پر (یعنی لائیو deployment پر) صحیح کام کرتا ہے — `localhost` پر بھی چل جاتا ہے، لیکن پیداواری استعمال کے لیے HTTPS ضروری ہے۔
 
 نوٹ: `server.js` اندر سے وہی `api/analyze.js` کو استعمال کرتا ہے، یعنی logic ایک ہی جگہ ہے — چاہے آپ Vercel پر deploy کریں یا اپنے Node server پر، AI والا کوڈ ایک ہی رہتا ہے۔
 
