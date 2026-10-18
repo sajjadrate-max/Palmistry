@@ -846,7 +846,7 @@
 
     <div class="panel">
       <h2>✨ <span data-i="auraIntroTitle">Aura Camera سے تشخیص</span></h2>
-      <p data-i="auraIntroText">اپنی یا کسی اور کی تصویر دیں اور ایک روایتی/روحانی انداز میں رنگین "Aura" تشخیص حاصل کریں۔ یہ محض روایتی و تفریحی تصور ہے — کسی حقیقی توانائی کے میدان، صحت یا نفسیاتی کیفیت کی سائنسی پیمائش نہیں۔</p>
+      <p data-i="auraIntroText">اپنی یا کسی اور کی تصویر دیں اور روایتی رنگ تھراپی کے انداز میں معلوم کریں کہ کون سا رنگ "کم" ہے، اور اسے پورا کرنے کے روایتی طریقے جانیں۔ یہ محض روایتی و تفریحی تصور ہے — کسی حقیقی کمی، صحت یا نفسیاتی کیفیت کی سائنسی پیمائش نہیں۔</p>
     </div>
 
     <div class="panel" id="auraStepUpload">
@@ -970,7 +970,7 @@ const I18N = {
     installedMsg:"ایپ کامیابی سے انسٹال ہو گئی!",
     tabAura:"✨ Aura Camera",
     auraIntroTitle:"Aura Camera سے تشخیص",
-    auraIntroText:"اپنی یا کسی اور کی تصویر دیں اور ایک روایتی/روحانی انداز میں رنگین \"Aura\" تشخیص حاصل کریں۔ یہ محض روایتی و تفریحی تصور ہے — کسی حقیقی توانائی کے میدان، صحت یا نفسیاتی کیفیت کی سائنسی پیمائش نہیں۔",
+    auraIntroText:"اپنی یا کسی اور کی تصویر دیں اور روایتی رنگ تھراپی کے انداز میں معلوم کریں کہ کون سا رنگ \"کم\" ہے، اور اسے پورا کرنے کے روایتی طریقے جانیں۔ یہ محض روایتی و تفریحی تصور ہے — کسی حقیقی کمی، صحت یا نفسیاتی کیفیت کی سائنسی پیمائش نہیں۔",
     auraUploadTitle:"اپنی تصویر دیں",
     auraUploadHint1:"تصویر منتخب کرنے کے لیے یہاں دبائیں",
     auraUploadHint2:"چہرہ صاف نظر آئے، روشنی اچھی ہو",
@@ -986,11 +986,12 @@ const I18N = {
     auraQualityPoorTitle:"تصویر کا معیار مناسب نہیں",
     auraRetakeBtn:"دوبارہ تصویر دیں",
     auraNewBtn:"نئی تشخیص کریں",
-    auraColorLabel:"آپ کا Aura رنگ",
-    auraElementLabel:"عنصر (Element)",
-    auraEnergyLabel:"توانائی کی سطح",
-    auraEmotionLabel:"جذباتی کیفیت",
-    auraPersonalityLabel:"شخصیت کی جھلک",
+    auraColorLabel:"آپ کا ناقص/کم رنگ",
+    auraRemediesTitle:"اسے پورا کرنے کے طریقے",
+    auraWearLabel:"پہننے میں",
+    auraSurroundingsLabel:"ماحول میں",
+    auraFoodLabel:"غذا میں",
+    auraStoneLabel:"پتھر/رتن",
     auraAffirmationLabel:"آج کا مثبت پیغام"
   },
   en: {
@@ -1056,7 +1057,7 @@ const I18N = {
     installedMsg:"App installed successfully!",
     tabAura:"✨ Aura Camera",
     auraIntroTitle:"Aura Camera Reading",
-    auraIntroText:"Give a photo of yourself (or someone else) and get a colorful \"Aura\" reading in a traditional/spiritual style. This is a traditional and entertainment concept only — not a scientific measurement of any real energy field, health, or psychological state.",
+    auraIntroText:"Give a photo of yourself (or someone else) and discover, in a traditional color-therapy style, which color could use a little boost — plus traditional ways to bring more of it into your life. This is a traditional and entertainment concept only — not a scientific measurement of any real deficiency, health, or psychological state.",
     auraUploadTitle:"Provide Your Photo",
     auraUploadHint1:"Tap here to choose a photo",
     auraUploadHint2:"Face clearly visible, good lighting",
@@ -1072,11 +1073,12 @@ const I18N = {
     auraQualityPoorTitle:"Image quality needs improvement",
     auraRetakeBtn:"Retake Photo",
     auraNewBtn:"New Reading",
-    auraColorLabel:"Your Aura Color",
-    auraElementLabel:"Element",
-    auraEnergyLabel:"Energy Level",
-    auraEmotionLabel:"Emotional Tone",
-    auraPersonalityLabel:"Personality Glimpse",
+    auraColorLabel:"Your Lacking Color",
+    auraRemediesTitle:"How to Complete It",
+    auraWearLabel:"Wear",
+    auraSurroundingsLabel:"Surroundings",
+    auraFoodLabel:"Food",
+    auraStoneLabel:"Gemstone",
     auraAffirmationLabel:"Today's Affirmation"
   }
 };
@@ -1407,35 +1409,33 @@ function renderAuraResults(data){
     return;
   }
 
-  const aura = data.aura_color || {};
-  let hex = (aura.hex || '').trim();
+  const lacking = data.lacking_color || {};
+  let hex = (lacking.hex || '').trim();
   if(!/^#[0-9a-fA-F]{6}$/.test(hex)){
-    const key = (aura.name_en || '').toLowerCase();
+    const key = (lacking.name_en || '').toLowerCase();
     hex = AURA_COLOR_FALLBACK[key] || '#c9a769';
   }
-  const colorName = aura.name_local || aura.name_en || '';
+  const colorName = lacking.name_local || lacking.name_en || '';
 
   html += `<div class="panel">
     <div class="aura-swatch-wrap">
+      <div class="aura-swatch-label" style="color:var(--muted);font-size:12.5px;font-family:'Inter',sans-serif;margin-bottom:2px;">${t('auraColorLabel')}</div>
       <div class="aura-swatch" style="background:${hex};box-shadow:0 0 34px 8px ${hex}66;"></div>
       <div class="aura-swatch-name">${escapeHtml(colorName)}</div>
       <div class="aura-swatch-hex">${escapeHtml(hex.toUpperCase())}</div>
     </div>
-    ${aura.meaning ? `<div class="subcard"><p>${escapeHtml(aura.meaning)}</p></div>` : ''}
+    ${data.why_it_matters ? `<div class="subcard"><p>${escapeHtml(data.why_it_matters)}</p></div>` : ''}
     ${data.affirmation ? `<div class="aura-affirmation">“${escapeHtml(data.affirmation)}”</div>` : ''}
   </div>`;
 
-  if(data.element){
-    html += cardSimple('🌙', t('auraElementLabel'), `<div class="subcard"><p>${escapeHtml(data.element)}</p></div>`);
-  }
-  if(data.energy_level){
-    html += cardSimple('⚡', t('auraEnergyLabel'), `<div class="subcard"><p>${escapeHtml(data.energy_level)}</p></div>`);
-  }
-  if(data.emotional_tone){
-    html += cardSimple('💗', t('auraEmotionLabel'), `<div class="subcard"><p>${escapeHtml(data.emotional_tone)}</p></div>`);
-  }
-  if(data.personality_glimpse){
-    html += cardSimple('🌟', t('auraPersonalityLabel'), `<div class="subcard"><p>${escapeHtml(data.personality_glimpse)}</p></div>`);
+  const remedies = data.remedies || {};
+  let remediesHtml = '';
+  if(remedies.wear) remediesHtml += `<div class="subcard"><div class="row-title">👕 ${t('auraWearLabel')}</div><p>${escapeHtml(remedies.wear)}</p></div>`;
+  if(remedies.surroundings) remediesHtml += `<div class="subcard"><div class="row-title">🏠 ${t('auraSurroundingsLabel')}</div><p>${escapeHtml(remedies.surroundings)}</p></div>`;
+  if(remedies.food) remediesHtml += `<div class="subcard"><div class="row-title">🍽️ ${t('auraFoodLabel')}</div><p>${escapeHtml(remedies.food)}</p></div>`;
+  if(remedies.stone) remediesHtml += `<div class="subcard"><div class="row-title">💎 ${t('auraStoneLabel')}</div><p>${escapeHtml(remedies.stone)}</p></div>`;
+  if(remediesHtml){
+    html += cardSimple('✅', t('auraRemediesTitle'), remediesHtml);
   }
 
   html += `<div class="panel disclaimer-box">
@@ -1450,8 +1450,8 @@ function renderAuraResults(data){
 
 function defaultAuraDisclaimer(){
   return currentLang==='ur'
-    ? "یہ Aura reading ایک روایتی و روحانی تفریحی تصور ہے۔ اس کی کوئی سائنسی یا طبی بنیاد نہیں، اور یہ کسی حقیقی توانائی کے میدان، صحت یا نفسیاتی کیفیت کی پیمائش نہیں کرتی۔ اسے صرف تفریحی سمجھیں۔"
-    : "This Aura reading is a traditional and spiritual entertainment concept. It has no scientific or medical basis and does not measure any real energy field, health, or psychological state. Please treat it as entertainment only.";
+    ? "یہ Aura reading ایک روایتی رنگ تھراپی طرز کا تفریحی تصور ہے۔ اس کی کوئی سائنسی یا طبی بنیاد نہیں، اور یہ کسی حقیقی توانائی کے میدان، جسمانی کمی، صحت یا نفسیاتی کیفیت کی پیمائش نہیں کرتی۔ اسے صرف تفریحی سمجھیں۔"
+    : "This Aura reading is a traditional, folk color-therapy style entertainment concept. It has no scientific or medical basis and does not measure any real energy field, deficiency, health, or psychological state. Please treat it as entertainment only.";
 }
 
 /* ============================================================
