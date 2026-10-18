@@ -13,6 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="کف بینی">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js" crossorigin="anonymous"></script>
 <style>
   :root{
     --bg-deep:#0d1220;
@@ -267,6 +268,14 @@
   }
   .tabbtn.active{border-color:var(--gold);color:var(--gold-bright);background:rgba(201,167,105,0.08);}
 
+  /* MODE TOGGLE (shared: Aura live scan vs file upload) */
+  .mode-toggle{display:flex;gap:8px;margin-bottom:16px;}
+  .mode-toggle button{
+    flex:1;background:var(--bg-deep);border:1.5px solid var(--line);color:var(--ink-dim);
+    padding:10px 8px;border-radius:10px;font-size:13.5px;cursor:pointer;font-family:inherit;font-weight:600;
+  }
+  .mode-toggle button.active{border-color:var(--gold);color:var(--gold-bright);background:rgba(201,167,105,0.08);}
+
   /* AURA CAMERA */
   .aura-swatch-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:16px;}
   .aura-swatch{width:88px;height:88px;border-radius:50%;border:3px solid rgba(255,255,255,0.18);transition:background .2s, box-shadow .2s;}
@@ -276,6 +285,47 @@
     text-align:center;font-size:15px;color:var(--gold-bright);font-style:italic;
     padding:14px;border-top:1px solid var(--line);margin-top:10px;
   }
+
+  /* AURA LIVE FACE SCAN */
+  .face-scan-wrap{
+    position:relative;border-radius:14px;overflow:hidden;background:#0a0e18;
+    aspect-ratio:3/4;max-height:520px;
+  }
+  .face-scan-wrap video, .face-scan-wrap canvas{
+    position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;
+  }
+  .face-scan-idle{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:14px;color:var(--ink-dim);text-align:center;padding:20px;
+  }
+  .face-scan-idle .icon{font-size:44px;}
+  .face-scan-status-bar{
+    position:absolute;bottom:0;left:0;right:0;padding:14px 16px 12px;
+    background:linear-gradient(0deg,rgba(0,0,0,0.7),transparent);
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .face-scan-status-text{
+    color:#fff;font-size:14px;font-weight:600;font-family:'Inter',sans-serif;
+    text-shadow:0 1px 4px rgba(0,0,0,0.6);text-align:center;letter-spacing:0.4px;
+  }
+  .face-scan-progress-track{width:100%;height:4px;border-radius:999px;background:rgba(255,255,255,0.25);overflow:hidden;}
+  .face-scan-progress-fill{height:100%;width:0%;background:var(--gold-bright);border-radius:999px;transition:width .12s linear;}
+  .face-scan-progress-fill.analyzing{background:#5be0b0;}
+  .face-scan-top-bar{
+    position:absolute;top:0;left:0;right:0;padding:10px 14px;
+    background:linear-gradient(180deg,rgba(0,0,0,0.55),transparent);
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .face-scan-cancel{
+    background:rgba(13,18,32,0.65);color:#fff;border:1px solid rgba(255,255,255,0.3);
+    border-radius:999px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:15px;
+  }
+  .face-scan-hint-badge{
+    background:rgba(13,18,32,0.55);color:#fff;border:1px solid rgba(255,255,255,0.25);
+    border-radius:999px;padding:5px 12px;font-size:12px;font-family:'Inter',sans-serif;
+  }
+  .face-scan-error{padding:16px;}
 
   /* INSTALL APP */
   .install-header-btn{
@@ -852,27 +902,63 @@
     <div class="panel" id="auraStepUpload">
       <h2><span class="num">1</span><span data-i="auraUploadTitle">اپنی تصویر دیں</span></h2>
 
-      <div id="auraUploadZoneBox">
-        <div class="upload-zone" onclick="document.getElementById('auraFileInput').click()">
-          <span class="icon">🤳</span>
-          <div data-i="auraUploadHint1">تصویر منتخب کرنے کے لیے یہاں دبائیں</div>
-          <div class="hint" data-i="auraUploadHint2">چہرہ صاف نظر آئے، روشنی اچھی ہو</div>
-        </div>
-        <div class="upload-actions">
-          <button class="btn btn-outline btn-block" onclick="document.getElementById('auraCameraInput').click()">
-            <span>📸</span><span data-i="auraTakePhoto">کیمرے سے تصویر لیں</span>
-          </button>
-        </div>
-        <input type="file" id="auraFileInput" accept="image/*" onchange="handleAuraFile(event)">
-        <input type="file" id="auraCameraInput" accept="image/*" capture="user" onchange="handleAuraFile(event)">
+      <div class="mode-toggle">
+        <button id="auraModeLiveBtn" class="active" onclick="setAuraUploadMode('live')" data-i="auraLiveTab">🔴 Live اسکین</button>
+        <button id="auraModeFileBtn" onclick="setAuraUploadMode('file')" data-i="auraUploadTab">🖼️ تصویر اپلوڈ کریں</button>
       </div>
 
-      <div id="auraPreviewBox" class="hidden">
-        <div class="preview-wrap">
-          <img id="auraPreviewImg" src="" alt="aura preview">
-          <div class="remove-img" onclick="resetAuraImage()">✕</div>
+      <!-- LIVE FACE SCAN MODE -->
+      <div id="auraLiveScanMode">
+        <div class="face-scan-wrap" id="faceScanWrap">
+          <video id="faceLiveVideo" playsinline muted></video>
+          <canvas id="faceScanCanvas"></canvas>
+
+          <div class="face-scan-idle" id="faceScanIdleOverlay">
+            <span class="icon">🤳</span>
+            <p data-i="faceScanIdleText">اپنا چہرہ کیمرے کے سامنے، صاف روشنی میں رکھیں</p>
+            <button class="btn btn-gold" id="startFaceScanBtn" onclick="startAuraLiveScan()">
+              <span>▶️</span><span data-i="startFaceScanBtn">اسکین شروع کریں</span>
+            </button>
+          </div>
+
+          <div class="face-scan-top-bar hidden" id="faceScanTopBar">
+            <span class="face-scan-hint-badge" id="faceScanHintBadge" data-i="faceScanStatusDetecting">چہرہ تلاش کیا جا رہا ہے…</span>
+            <div class="face-scan-cancel" onclick="stopAuraLiveScan()">✕</div>
+          </div>
+
+          <div class="face-scan-status-bar hidden" id="faceScanStatusBar">
+            <div class="face-scan-status-text" id="faceScanStatusText" data-i="faceScanStatusDetecting">چہرہ تلاش کیا جا رہا ہے…</div>
+            <div class="face-scan-progress-track"><div class="face-scan-progress-fill" id="faceScanProgressFill"></div></div>
+          </div>
         </div>
+        <div id="faceScanErrorBox"></div>
         <div class="privacy-note" data-i="auraPrivacyNote">آپ کی تصویر صرف اس تشخیص کے لیے استعمال ہوگی اور مستقل طور پر سرور پر محفوظ نہیں کی جاتی۔</div>
+      </div>
+
+      <!-- FILE UPLOAD MODE -->
+      <div id="auraFileUploadMode" class="hidden">
+        <div id="auraUploadZoneBox">
+          <div class="upload-zone" onclick="document.getElementById('auraFileInput').click()">
+            <span class="icon">🤳</span>
+            <div data-i="auraUploadHint1">تصویر منتخب کرنے کے لیے یہاں دبائیں</div>
+            <div class="hint" data-i="auraUploadHint2">چہرہ صاف نظر آئے، روشنی اچھی ہو</div>
+          </div>
+          <div class="upload-actions">
+            <button class="btn btn-outline btn-block" onclick="document.getElementById('auraCameraInput').click()">
+              <span>📸</span><span data-i="auraTakePhoto">کیمرے سے تصویر لیں</span>
+            </button>
+          </div>
+          <input type="file" id="auraFileInput" accept="image/*" onchange="handleAuraFile(event)">
+          <input type="file" id="auraCameraInput" accept="image/*" capture="user" onchange="handleAuraFile(event)">
+        </div>
+
+        <div id="auraPreviewBox" class="hidden">
+          <div class="preview-wrap">
+            <img id="auraPreviewImg" src="" alt="aura preview">
+            <div class="remove-img" onclick="resetAuraImage()">✕</div>
+          </div>
+          <div class="privacy-note" data-i="auraPrivacyNote">آپ کی تصویر صرف اس تشخیص کے لیے استعمال ہوگی اور مستقل طور پر سرور پر محفوظ نہیں کی جاتی۔</div>
+        </div>
       </div>
     </div>
 
@@ -992,7 +1078,14 @@ const I18N = {
     auraSurroundingsLabel:"ماحول میں",
     auraFoodLabel:"غذا میں",
     auraStoneLabel:"پتھر/رتن",
-    auraAffirmationLabel:"آج کا مثبت پیغام"
+    auraAffirmationLabel:"آج کا مثبت پیغام",
+    auraLiveTab:"🔴 Live اسکین",
+    auraUploadTab:"🖼️ تصویر اپلوڈ کریں",
+    faceScanIdleText:"اپنا چہرہ کیمرے کے سامنے، صاف روشنی میں رکھیں",
+    startFaceScanBtn:"اسکین شروع کریں",
+    faceScanStatusDetecting:"چہرہ تلاش کیا جا رہا ہے…",
+    faceScanStatusHold:"چہرے کو ساکن رکھیں…",
+    faceScanStatusCapturing:"تصویر لی جا رہی ہے…"
   },
   en: {
     brandName:"Palmistry", eyebrow:"TRADITIONAL PALMISTRY · AI ASSISTED",
@@ -1079,7 +1172,14 @@ const I18N = {
     auraSurroundingsLabel:"Surroundings",
     auraFoodLabel:"Food",
     auraStoneLabel:"Gemstone",
-    auraAffirmationLabel:"Today's Affirmation"
+    auraAffirmationLabel:"Today's Affirmation",
+    auraLiveTab:"🔴 Live Scan",
+    auraUploadTab:"🖼️ Upload Photo",
+    faceScanIdleText:"Hold your face in front of the camera, in good light",
+    startFaceScanBtn:"Start Scan",
+    faceScanStatusDetecting:"Looking for your face…",
+    faceScanStatusHold:"Hold your face steady…",
+    faceScanStatusCapturing:"Capturing image…"
   }
 };
 /* Labels for values whose JSON key gets shown as a heading/label in the
@@ -1148,6 +1248,9 @@ function showTab(name){
   document.getElementById('tabReading').classList.toggle('active', name==='reading');
   document.getElementById('tabAura').classList.toggle('active', name==='aura');
   document.getElementById('tabLearn').classList.toggle('active', name==='learn');
+  if(name!=='aura' && typeof stopAuraLiveScan === 'function'){
+    stopAuraLiveScan();
+  }
 }
 
 /* ============================================================
@@ -1292,6 +1395,273 @@ let uploadedAuraBase64 = null;
 let uploadedAuraMime = null;
 let lastAuraData = null;
 
+/* ---- Mode toggle (Live scan vs file upload) ---- */
+function setAuraUploadMode(mode){
+  document.getElementById('auraModeLiveBtn').classList.toggle('active', mode==='live');
+  document.getElementById('auraModeFileBtn').classList.toggle('active', mode==='file');
+  document.getElementById('auraLiveScanMode').classList.toggle('hidden', mode!=='live');
+  document.getElementById('auraFileUploadMode').classList.toggle('hidden', mode!=='file');
+  if(mode==='file'){
+    stopAuraLiveScan();
+  }
+}
+
+/* ---- Shared MediaPipe Face Detection instance ---- */
+let faceDetectionInstance = null;
+
+function getFaceDetection(){
+  return new Promise((resolve, reject)=>{
+    if(faceDetectionInstance){ resolve(faceDetectionInstance); return; }
+    try{
+      if(typeof FaceDetection === 'undefined'){
+        reject(new Error('MediaPipe FaceDetection script not loaded'));
+        return;
+      }
+      faceDetectionInstance = new FaceDetection({
+        locateFile: (file)=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`
+      });
+      faceDetectionInstance.setOptions({ model: 'short', minDetectionConfidence: 0.5 });
+      resolve(faceDetectionInstance);
+    }catch(e){ reject(e); }
+  });
+}
+
+/**
+ * Crops an image (data URL) tightly around the detected face, so a busy
+ * background (shop shelves, other objects, etc.) doesn't influence the
+ * color reading. Falls back to the original image untouched if no face
+ * is confidently detected.
+ */
+function cropImageToFace(dataUrl){
+  return getFaceDetection().then(function(fd){
+    return new Promise(function(resolve){
+      const img = new Image();
+      img.onload = function(){
+        fd.onResults(function(results){
+          const det = results.detections && results.detections[0];
+          if(!det || !det.boundingBox){ resolve(dataUrl); return; }
+          resolve(cropToBoundingBox(img, det.boundingBox));
+        });
+        fd.send({ image: img }).catch(function(){ resolve(dataUrl); });
+      };
+      img.onerror = function(){ resolve(dataUrl); };
+      img.src = dataUrl;
+    });
+  }).catch(function(err){
+    console.error('Face crop unavailable, using original image:', err);
+    return dataUrl;
+  });
+}
+
+function cropToBoundingBox(imgEl, bbox, padW, padH){
+  const iw = imgEl.naturalWidth || imgEl.videoWidth;
+  const ih = imgEl.naturalHeight || imgEl.videoHeight;
+  const w = Math.min(iw, bbox.width * iw * (padW || 2.2));
+  const h = Math.min(ih, bbox.height * ih * (padH || 2.6));
+  const cx = bbox.xCenter * iw;
+  const cy = bbox.yCenter * ih + bbox.height * ih * 0.12;
+  let x = Math.max(0, Math.min(cx - w/2, iw - w));
+  let y = Math.max(0, Math.min(cy - h/2, ih - h));
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(imgEl, x, y, w, h, 0, 0, w, h);
+  return canvas.toDataURL('image/jpeg', 0.88);
+}
+
+/* ---- Live face scan ---- */
+let faceMediaStream = null;
+let faceScanLoopActive = false;
+let faceScanRAFId = null;
+let faceScanState = 'idle'; // idle | detecting | holding
+let faceDetectedSince = null;
+let faceCaptureTriggered = false;
+const FACE_SCAN_HOLD_MS = 900;
+
+async function startAuraLiveScan(){
+  document.getElementById('faceScanErrorBox').innerHTML = '';
+  const video = document.getElementById('faceLiveVideo');
+
+  try{
+    faceMediaStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 960 }, height: { ideal: 1280 } },
+      audio: false
+    });
+  }catch(err){
+    console.error('getUserMedia error:', err);
+    showFaceScanError(t('cameraErrorTitle'), t('cameraErrorMsg'));
+    return;
+  }
+
+  video.srcObject = faceMediaStream;
+  try{ await video.play(); }catch(e){ /* autoplay quirks are non-fatal here */ }
+
+  let fd;
+  try{
+    fd = await getFaceDetection();
+    fd.onResults(onFaceScanResults);
+  }catch(err){
+    console.error('MediaPipe FaceDetection init error:', err);
+    showFaceScanError(t('cameraErrorTitle'), t('mediapipeErrorMsg'));
+    stopAuraLiveScan();
+    return;
+  }
+
+  document.getElementById('faceScanIdleOverlay').classList.add('hidden');
+  document.getElementById('faceScanTopBar').classList.remove('hidden');
+  document.getElementById('faceScanStatusBar').classList.remove('hidden');
+
+  faceScanState = 'detecting';
+  faceDetectedSince = null;
+  faceCaptureTriggered = false;
+  setFaceScanStatusText(t('faceScanStatusDetecting'));
+  setFaceScanProgress(0);
+
+  faceScanLoopActive = true;
+  faceScanLoop();
+}
+
+function faceScanLoop(){
+  if(!faceScanLoopActive) return;
+  const video = document.getElementById('faceLiveVideo');
+  if(video.readyState >= 2 && faceDetectionInstance){
+    faceDetectionInstance.send({ image: video }).catch(e=>console.error('FaceDetection.send error:', e));
+  }
+  faceScanRAFId = requestAnimationFrame(faceScanLoop);
+}
+
+function onFaceScanResults(results){
+  const canvas = document.getElementById('faceScanCanvas');
+  const video = document.getElementById('faceLiveVideo');
+  if(!canvas || !video) return;
+  if(video.videoWidth && canvas.width !== video.videoWidth){
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const det = results.detections && results.detections[0];
+  handleFacePresence(!!det);
+
+  if(det && det.boundingBox){
+    drawFaceOutline(ctx, det.boundingBox, canvas.width, canvas.height);
+  }
+}
+
+function handleFacePresence(hasFace){
+  if(!faceScanLoopActive) return;
+  const now = performance.now();
+
+  if(faceScanState === 'detecting'){
+    if(hasFace){
+      if(!faceDetectedSince) faceDetectedSince = now;
+      setFaceScanStatusText(t('faceScanStatusHold'));
+      const heldMs = now - faceDetectedSince;
+      setFaceScanProgress(Math.min(100, (heldMs / FACE_SCAN_HOLD_MS) * 100));
+      if(heldMs >= FACE_SCAN_HOLD_MS && !faceCaptureTriggered){
+        faceCaptureTriggered = true;
+        finishAuraLiveScan();
+      }
+    }else{
+      faceDetectedSince = null;
+      setFaceScanStatusText(t('faceScanStatusDetecting'));
+      setFaceScanProgress(0);
+    }
+  }
+}
+
+function drawFaceOutline(ctx, bbox, W, H){
+  const color = '#e8c887';
+  const x = (bbox.xCenter - bbox.width/2) * W;
+  const y = (bbox.yCenter - bbox.height/2) * H;
+  const w = bbox.width * W;
+  const h = bbox.height * H;
+  const r = Math.min(w, h) * 0.18;
+
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = Math.max(2, W * 0.006);
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 8;
+  ctx.beginPath();
+  ctx.ellipse(x + w/2, y + h/2, w/2 + r*0.3, h/2 + r*0.5, 0, 0, 2*Math.PI);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function setFaceScanStatusText(msg){
+  const badge = document.getElementById('faceScanHintBadge');
+  const status = document.getElementById('faceScanStatusText');
+  if(badge) badge.textContent = msg;
+  if(status) status.textContent = msg;
+}
+
+function setFaceScanProgress(pct){
+  const fill = document.getElementById('faceScanProgressFill');
+  if(fill) fill.style.width = pct + '%';
+}
+
+function showFaceScanError(title, msg){
+  document.getElementById('faceScanErrorBox').innerHTML =
+    `<div class="alert alert-warn face-scan-error"><span class="ic">⚠️</span><div><strong>${escapeHtml(title)}</strong><p style="margin:6px 0 0;">${escapeHtml(msg)}</p></div></div>`;
+}
+
+function finishAuraLiveScan(){
+  const video = document.getElementById('faceLiveVideo');
+  setFaceScanStatusText(t('faceScanStatusCapturing'));
+
+  const off = document.createElement('canvas');
+  off.width = video.videoWidth || 720;
+  off.height = video.videoHeight || 960;
+  const octx = off.getContext('2d');
+  octx.drawImage(video, 0, 0, off.width, off.height);
+  const dataUrl = off.toDataURL('image/jpeg', 0.92);
+
+  stopAuraLiveScan();
+  clearAuraError();
+  hideAuraResults();
+
+  cropImageToFace(dataUrl).then(function(cropped){
+    uploadedAuraBase64 = cropped;
+    uploadedAuraMime = 'image/jpeg';
+    analyzeAura();
+  });
+}
+
+function stopAuraLiveScan(){
+  faceScanLoopActive = false;
+  if(faceScanRAFId) cancelAnimationFrame(faceScanRAFId);
+  faceScanRAFId = null;
+
+  if(faceMediaStream){
+    faceMediaStream.getTracks().forEach(tr=>tr.stop());
+    faceMediaStream = null;
+  }
+  const video = document.getElementById('faceLiveVideo');
+  if(video) video.srcObject = null;
+
+  const canvas = document.getElementById('faceScanCanvas');
+  if(canvas){
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  const idleOverlay = document.getElementById('faceScanIdleOverlay');
+  const topBar = document.getElementById('faceScanTopBar');
+  const statusBar = document.getElementById('faceScanStatusBar');
+  if(idleOverlay) idleOverlay.classList.remove('hidden');
+  if(topBar) topBar.classList.add('hidden');
+  if(statusBar) statusBar.classList.add('hidden');
+
+  faceScanState = 'idle';
+  faceDetectedSince = null;
+  faceCaptureTriggered = false;
+  setFaceScanProgress(0);
+}
+
 function handleAuraFile(evt){
   const file = evt.target.files && evt.target.files[0];
   if(!file) return;
@@ -1300,6 +1670,8 @@ function handleAuraFile(evt){
     return;
   }
   compressImage(file, 1800, 0.85).then(function(dataUrl){
+    return cropImageToFace(dataUrl);
+  }).then(function(dataUrl){
     uploadedAuraBase64 = dataUrl;
     uploadedAuraMime = 'image/jpeg';
     document.getElementById('auraPreviewImg').src = uploadedAuraBase64;
