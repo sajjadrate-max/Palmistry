@@ -1420,7 +1420,7 @@ function getFaceDetection(){
       faceDetectionInstance = new FaceDetection({
         locateFile: (file)=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`
       });
-      faceDetectionInstance.setOptions({ model: 'short', minDetectionConfidence: 0.5 });
+      faceDetectionInstance.setOptions({ model: 'short', minDetectionConfidence: 0.4 });
       resolve(faceDetectionInstance);
     }catch(e){ reject(e); }
   });
@@ -1453,21 +1453,37 @@ function cropImageToFace(dataUrl){
   });
 }
 
-function cropToBoundingBox(imgEl, bbox, padW, padH){
+function cropToBoundingBox(imgEl, bbox){
   const iw = imgEl.naturalWidth || imgEl.videoWidth;
   const ih = imgEl.naturalHeight || imgEl.videoHeight;
-  const w = Math.min(iw, bbox.width * iw * (padW || 2.2));
-  const h = Math.min(ih, bbox.height * ih * (padH || 2.6));
-  const cx = bbox.xCenter * iw;
-  const cy = bbox.yCenter * ih + bbox.height * ih * 0.12;
-  let x = Math.max(0, Math.min(cx - w/2, iw - w));
-  let y = Math.max(0, Math.min(cy - h/2, ih - h));
+
+  const bboxW = bbox.width * iw;
+  const bboxH = bbox.height * ih;
+  const bboxLeft = bbox.xCenter * iw - bboxW / 2;
+  const bboxTop = bbox.yCenter * ih - bboxH / 2;
+
+  // Tight headshot framing: a little headroom above, more room below for
+  // chin/neck, modest side margin — deliberately tighter than a simple
+  // symmetric multiplier so close-up selfies (where the face bbox is
+  // already large) still get a meaningfully smaller, background-free crop.
+  let left = bboxLeft - bboxW * 0.25;
+  let right = bboxLeft + bboxW * 1.25;
+  let top = bboxTop - bboxH * 0.2;
+  let bottom = bboxTop + bboxH * 1.4;
+
+  left = Math.max(0, left);
+  top = Math.max(0, top);
+  right = Math.min(iw, right);
+  bottom = Math.min(ih, bottom);
+
+  const w = Math.max(1, right - left);
+  const h = Math.max(1, bottom - top);
 
   const canvas = document.createElement('canvas');
   canvas.width = w;
   canvas.height = h;
   const ctx = canvas.getContext('2d');
-  ctx.drawImage(imgEl, x, y, w, h, 0, 0, w, h);
+  ctx.drawImage(imgEl, left, top, w, h, 0, 0, w, h);
   return canvas.toDataURL('image/jpeg', 0.88);
 }
 
