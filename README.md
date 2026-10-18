@@ -13,7 +13,8 @@ palmistry-app/
 ├── index.html          ← مکمل frontend (HTML+CSS+JS ایک ہی فائل میں)
 ├── server.js            ← Express backend (local testing / کسی بھی Node host کے لیے)
 ├── api/
-│   └── analyze.js       ← Serverless function (Vercel کے لیے) — اصل AI logic یہیں ہے
+│   ├── analyze.js       ← Serverless function (Vercel کے لیے) — کف بینی کا AI logic یہیں ہے
+│   └── aura.js          ← Serverless function — Aura Camera تشخیص کا AI logic یہیں ہے
 ├── manifest.json         ← PWA manifest (ایپ کا نام، آئیکن، تھیم رنگ)
 ├── sw.js                 ← Service worker (Install / Add to Home Screen کے لیے)
 ├── icon-192.png, icon-512.png, apple-touch-icon.png  ← ایپ آئیکنز (root پر)
@@ -33,6 +34,10 @@ palmistry-app/
 - یہ صرف HTTPS پر (یعنی لائیو deployment پر) صحیح کام کرتا ہے — `localhost` پر بھی چل جاتا ہے، لیکن پیداواری استعمال کے لیے HTTPS ضروری ہے۔
 
 نوٹ: `server.js` اندر سے وہی `api/analyze.js` کو استعمال کرتا ہے، یعنی logic ایک ہی جگہ ہے — چاہے آپ Vercel پر deploy کریں یا اپنے Node server پر، AI والا کوڈ ایک ہی رہتا ہے۔
+
+### Aura Camera
+
+ایک الگ "✨ Aura Camera" ٹیب بھی شامل ہے — صارف اپنی (یا کسی اور کی) تصویر دیتا ہے اور `api/aura.js` اسے OpenAI Vision کو بھیج کر ایک روایتی/روحانی انداز میں رنگین "Aura" تشخیص واپس دیتا ہے (رنگ، عنصر، توانائی کی سطح، جذباتی کیفیت، مثبت پیغام)۔ یہ پامسٹری کی طرح ہی سختی سے صرف روایتی/تفریحی تصور کے طور پر framed ہے — کوئی سائنسی یا طبی دعویٰ نہیں کیا جاتا۔
 
 ---
 

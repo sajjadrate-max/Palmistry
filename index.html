@@ -267,6 +267,16 @@
   }
   .tabbtn.active{border-color:var(--gold);color:var(--gold-bright);background:rgba(201,167,105,0.08);}
 
+  /* AURA CAMERA */
+  .aura-swatch-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:16px;}
+  .aura-swatch{width:88px;height:88px;border-radius:50%;border:3px solid rgba(255,255,255,0.18);transition:background .2s, box-shadow .2s;}
+  .aura-swatch-name{font-size:18px;font-weight:700;color:var(--ink);font-family:'Cinzel','Noto Nastaliq Urdu',serif;}
+  .aura-swatch-hex{font-size:12px;color:var(--muted);font-family:'Inter',sans-serif;letter-spacing:0.5px;}
+  .aura-affirmation{
+    text-align:center;font-size:15px;color:var(--gold-bright);font-style:italic;
+    padding:14px;border-top:1px solid var(--line);margin-top:10px;
+  }
+
   /* INSTALL APP */
   .install-header-btn{
     display:none;align-items:center;gap:6px;background:var(--bg-panel);
@@ -361,6 +371,7 @@
 
 <div class="tabbar">
   <button class="tabbtn active" id="tabReading" onclick="showTab('reading')" data-i="tabReading">کف بینی کروائیں</button>
+  <button class="tabbtn" id="tabAura" onclick="showTab('aura')" data-i="tabAura">✨ Aura Camera</button>
   <button class="tabbtn" id="tabLearn" onclick="showTab('learn')" data-i="tabLearn">علمِ کف شناسی سیکھیں</button>
 </div>
 
@@ -830,6 +841,61 @@
     </div>
   </div>
 
+  <!-- ============ AURA CAMERA TAB ============ -->
+  <div id="viewAura" class="hidden">
+
+    <div class="panel">
+      <h2>✨ <span data-i="auraIntroTitle">Aura Camera سے تشخیص</span></h2>
+      <p data-i="auraIntroText">اپنی یا کسی اور کی تصویر دیں اور ایک روایتی/روحانی انداز میں رنگین "Aura" تشخیص حاصل کریں۔ یہ محض روایتی و تفریحی تصور ہے — کسی حقیقی توانائی کے میدان، صحت یا نفسیاتی کیفیت کی سائنسی پیمائش نہیں۔</p>
+    </div>
+
+    <div class="panel" id="auraStepUpload">
+      <h2><span class="num">1</span><span data-i="auraUploadTitle">اپنی تصویر دیں</span></h2>
+
+      <div id="auraUploadZoneBox">
+        <div class="upload-zone" onclick="document.getElementById('auraFileInput').click()">
+          <span class="icon">🤳</span>
+          <div data-i="auraUploadHint1">تصویر منتخب کرنے کے لیے یہاں دبائیں</div>
+          <div class="hint" data-i="auraUploadHint2">چہرہ صاف نظر آئے، روشنی اچھی ہو</div>
+        </div>
+        <div class="upload-actions">
+          <button class="btn btn-outline btn-block" onclick="document.getElementById('auraCameraInput').click()">
+            <span>📸</span><span data-i="auraTakePhoto">کیمرے سے تصویر لیں</span>
+          </button>
+        </div>
+        <input type="file" id="auraFileInput" accept="image/*" onchange="handleAuraFile(event)">
+        <input type="file" id="auraCameraInput" accept="image/*" capture="user" onchange="handleAuraFile(event)">
+      </div>
+
+      <div id="auraPreviewBox" class="hidden">
+        <div class="preview-wrap">
+          <img id="auraPreviewImg" src="" alt="aura preview">
+          <div class="remove-img" onclick="resetAuraImage()">✕</div>
+        </div>
+        <div class="privacy-note" data-i="auraPrivacyNote">آپ کی تصویر صرف اس تشخیص کے لیے استعمال ہوگی اور مستقل طور پر سرور پر محفوظ نہیں کی جاتی۔</div>
+      </div>
+    </div>
+
+    <div class="panel" id="auraStepAnalyze">
+      <h2><span class="num">2</span><span data-i="auraAnalyzeTitle">تشخیص کروائیں</span></h2>
+      <button class="btn btn-gold btn-block" id="auraAnalyzeBtn" onclick="analyzeAura()" disabled>
+        <span>✨</span><span data-i="auraAnalyzeBtnLbl">Aura تشخیص کریں</span>
+      </button>
+    </div>
+
+    <div class="panel hidden" id="auraLoadingPanel">
+      <div class="loading-box">
+        <div class="spinner"></div>
+        <p data-i="auraLoadingText">آپ کی Aura کا تجزیہ کیا جا رہا ہے… یہ چند لمحے لے سکتا ہے</p>
+      </div>
+    </div>
+
+    <div id="auraErrorBox"></div>
+
+    <div id="auraResultsBox"></div>
+
+  </div>
+
 </main>
 
 <footer class="site-footer">
@@ -845,7 +911,7 @@ const I18N = {
     brandName:"کف بینی", eyebrow:"روایتی کف بینی · AI کی مدد سے",
     heroTitle:"اپنے ہاتھ کی کہانی جانیے",
     heroLead:"اپنی ہتھیلی کی صاف تصویر اپلوڈ کریں اور روایتی علمِ کف شناسی کے مطابق تفصیلی، خوبصورت انداز میں تجزیہ حاصل کریں۔ یہ محض روایتی و تفریحی تشریح ہے، سائنسی پیش گوئی نہیں۔",
-    tabReading:"کف بینی کروائیں", tabLearn:"علمِ کف شناسی سیکھیں",
+    tabReading:"کف بینی کروائیں", tabAura:"✨ Aura Camera", tabLearn:"علمِ کف شناسی سیکھیں",
     step1Title:"آپ کیا جاننا چاہتے ہیں؟",
     topicFull:"مکمل تجزیہ", topicMarriage:"شادی / محبت", topicHealth:"صحت کا رجحان",
     topicFate:"قسمت / کیریئر", topicWealth:"مالی معاملات", topicPersonality:"شخصیت",
@@ -901,7 +967,31 @@ const I18N = {
     installBannerBtn:"Install",
     iosInstallTitle:"آئی فون پر انسٹال کرنے کا طریقہ",
     iosInstallSteps:"نیچے Share بٹن ⬆️ دبائیں، پھر \"Add to Home Screen\" منتخب کریں۔",
-    installedMsg:"ایپ کامیابی سے انسٹال ہو گئی!"
+    installedMsg:"ایپ کامیابی سے انسٹال ہو گئی!",
+    tabAura:"✨ Aura Camera",
+    auraIntroTitle:"Aura Camera سے تشخیص",
+    auraIntroText:"اپنی یا کسی اور کی تصویر دیں اور ایک روایتی/روحانی انداز میں رنگین \"Aura\" تشخیص حاصل کریں۔ یہ محض روایتی و تفریحی تصور ہے — کسی حقیقی توانائی کے میدان، صحت یا نفسیاتی کیفیت کی سائنسی پیمائش نہیں۔",
+    auraUploadTitle:"اپنی تصویر دیں",
+    auraUploadHint1:"تصویر منتخب کرنے کے لیے یہاں دبائیں",
+    auraUploadHint2:"چہرہ صاف نظر آئے، روشنی اچھی ہو",
+    auraTakePhoto:"کیمرے سے تصویر لیں",
+    auraPrivacyNote:"آپ کی تصویر صرف اس تشخیص کے لیے استعمال ہوگی اور مستقل طور پر سرور پر محفوظ نہیں کی جاتی۔",
+    auraAnalyzeTitle:"تشخیص کروائیں",
+    auraAnalyzeBtnLbl:"Aura تشخیص کریں",
+    auraLoadingText:"آپ کی Aura کا تجزیہ کیا جا رہا ہے… یہ چند لمحے لے سکتا ہے",
+    auraErrNoImage:"براہ کرم پہلے تصویر منتخب کریں۔",
+    auraErrGeneric:"معذرت، تشخیص مکمل نہیں ہو سکی۔ براہ کرم دوبارہ کوشش کریں۔",
+    auraErrTimeout:"سرور سے جواب آنے میں تاخیر ہوئی۔ براہ کرم انٹرنیٹ چیک کر کے دوبارہ کوشش کریں۔",
+    auraErrBadImage:"تصویر واضح نہیں ہے۔ براہ کرم بہتر روشنی میں، چہرہ صاف نظر آنے والی تصویر دوبارہ لیں۔",
+    auraQualityPoorTitle:"تصویر کا معیار مناسب نہیں",
+    auraRetakeBtn:"دوبارہ تصویر دیں",
+    auraNewBtn:"نئی تشخیص کریں",
+    auraColorLabel:"آپ کا Aura رنگ",
+    auraElementLabel:"عنصر (Element)",
+    auraEnergyLabel:"توانائی کی سطح",
+    auraEmotionLabel:"جذباتی کیفیت",
+    auraPersonalityLabel:"شخصیت کی جھلک",
+    auraAffirmationLabel:"آج کا مثبت پیغام"
   },
   en: {
     brandName:"Palmistry", eyebrow:"TRADITIONAL PALMISTRY · AI ASSISTED",
@@ -963,7 +1053,31 @@ const I18N = {
     installBannerBtn:"Install",
     iosInstallTitle:"How to install on iPhone",
     iosInstallSteps:"Tap the Share button ⬆️ below, then choose \"Add to Home Screen\".",
-    installedMsg:"App installed successfully!"
+    installedMsg:"App installed successfully!",
+    tabAura:"✨ Aura Camera",
+    auraIntroTitle:"Aura Camera Reading",
+    auraIntroText:"Give a photo of yourself (or someone else) and get a colorful \"Aura\" reading in a traditional/spiritual style. This is a traditional and entertainment concept only — not a scientific measurement of any real energy field, health, or psychological state.",
+    auraUploadTitle:"Provide Your Photo",
+    auraUploadHint1:"Tap here to choose a photo",
+    auraUploadHint2:"Face clearly visible, good lighting",
+    auraTakePhoto:"Take a Photo",
+    auraPrivacyNote:"Your photo is used only for this reading and is not permanently stored on the server.",
+    auraAnalyzeTitle:"Run the Reading",
+    auraAnalyzeBtnLbl:"Reveal My Aura",
+    auraLoadingText:"Reading your Aura… this can take a few moments",
+    auraErrNoImage:"Please select a photo first.",
+    auraErrGeneric:"Sorry, the reading could not be completed. Please try again.",
+    auraErrTimeout:"The server took too long to respond. Please check your connection and try again.",
+    auraErrBadImage:"The image isn't clear enough. Please retake it in better light, with the face clearly visible.",
+    auraQualityPoorTitle:"Image quality needs improvement",
+    auraRetakeBtn:"Retake Photo",
+    auraNewBtn:"New Reading",
+    auraColorLabel:"Your Aura Color",
+    auraElementLabel:"Element",
+    auraEnergyLabel:"Energy Level",
+    auraEmotionLabel:"Emotional Tone",
+    auraPersonalityLabel:"Personality Glimpse",
+    auraAffirmationLabel:"Today's Affirmation"
   }
 };
 /* Labels for values whose JSON key gets shown as a heading/label in the
@@ -1027,8 +1141,10 @@ function t(key){ return I18N[currentLang][key] || key; }
    ============================================================ */
 function showTab(name){
   document.getElementById('viewReading').classList.toggle('hidden', name!=='reading');
+  document.getElementById('viewAura').classList.toggle('hidden', name!=='aura');
   document.getElementById('viewLearn').classList.toggle('hidden', name!=='learn');
   document.getElementById('tabReading').classList.toggle('active', name==='reading');
+  document.getElementById('tabAura').classList.toggle('active', name==='aura');
   document.getElementById('tabLearn').classList.toggle('active', name==='learn');
 }
 
@@ -1165,6 +1281,177 @@ function escapeHtml(s){
   const d = document.createElement('div');
   d.innerText = s;
   return d.innerHTML;
+}
+
+/* ============================================================
+   AURA CAMERA
+   ============================================================ */
+let uploadedAuraBase64 = null;
+let uploadedAuraMime = null;
+let lastAuraData = null;
+
+function handleAuraFile(evt){
+  const file = evt.target.files && evt.target.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('image/')){
+    showAuraError(t('auraErrBadImage'));
+    return;
+  }
+  compressImage(file, 1800, 0.85).then(function(dataUrl){
+    uploadedAuraBase64 = dataUrl;
+    uploadedAuraMime = 'image/jpeg';
+    document.getElementById('auraPreviewImg').src = uploadedAuraBase64;
+    document.getElementById('auraUploadZoneBox').classList.add('hidden');
+    document.getElementById('auraPreviewBox').classList.remove('hidden');
+    document.getElementById('auraAnalyzeBtn').disabled = false;
+    clearAuraError();
+    hideAuraResults();
+  }).catch(function(err){
+    console.error('Aura image compression error:', err);
+    showAuraError(t('auraErrBadImage'));
+  });
+}
+
+function resetAuraImage(){
+  uploadedAuraBase64 = null;
+  uploadedAuraMime = null;
+  document.getElementById('auraFileInput').value = '';
+  document.getElementById('auraCameraInput').value = '';
+  document.getElementById('auraPreviewBox').classList.add('hidden');
+  document.getElementById('auraUploadZoneBox').classList.remove('hidden');
+  document.getElementById('auraAnalyzeBtn').disabled = true;
+}
+
+function hideAuraResults(){
+  document.getElementById('auraResultsBox').innerHTML = '';
+}
+
+function showAuraError(msg){
+  document.getElementById('auraErrorBox').innerHTML =
+    `<div class="alert alert-warn"><span class="ic">⚠️</span><div>${escapeHtml(msg)}</div></div>`;
+}
+function clearAuraError(){
+  document.getElementById('auraErrorBox').innerHTML = '';
+}
+
+async function analyzeAura(){
+  clearAuraError();
+  hideAuraResults();
+  if(!uploadedAuraBase64){
+    showAuraError(t('auraErrNoImage'));
+    return;
+  }
+  document.getElementById('auraLoadingPanel').classList.remove('hidden');
+  document.getElementById('auraAnalyzeBtn').disabled = true;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(()=>controller.abort(), 45000);
+
+  try{
+    const resp = await fetch('/api/aura', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        image: uploadedAuraBase64,
+        language: currentLang
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    if(!resp.ok){
+      const errData = await safeJson(resp);
+      throw new Error(errData && errData.error ? errData.error : ('HTTP '+resp.status));
+    }
+    const data = await resp.json();
+    renderAuraResults(data);
+  }catch(err){
+    if(err.name === 'AbortError'){
+      showAuraError(t('auraErrTimeout'));
+    }else{
+      showAuraError(t('auraErrGeneric'));
+    }
+    console.error('Aura analyze error:', err);
+  }finally{
+    document.getElementById('auraLoadingPanel').classList.add('hidden');
+    document.getElementById('auraAnalyzeBtn').disabled = false;
+  }
+}
+
+const AURA_COLOR_FALLBACK = {
+  red:'#e0544a', orange:'#e08a3c', yellow:'#e0c341', green:'#4fbf6e',
+  blue:'#4f8fd9', indigo:'#5b5bd9', violet:'#9c5bd9', pink:'#e05ca0',
+  gold:'#c9a769', white:'#efe9da'
+};
+
+function renderAuraResults(data){
+  lastAuraData = data;
+  const box = document.getElementById('auraResultsBox');
+  let html = '';
+
+  const q = data.image_quality || {};
+  const isPoor = (q.status && q.status.toLowerCase() !== 'good');
+  if(isPoor){
+    html += `<div class="panel">
+      <div class="alert alert-warn">
+        <span class="ic">📷</span>
+        <div>
+          <strong>${t('auraQualityPoorTitle')}</strong>
+          <p style="margin:6px 0 0;">${escapeHtml(q.message || t('auraErrBadImage'))}</p>
+        </div>
+      </div>
+      <button class="btn btn-gold btn-block" onclick="resetAuraImage(); hideAuraResults();">${t('auraRetakeBtn')}</button>
+    </div>`;
+    box.innerHTML = html;
+    box.scrollIntoView({behavior:'smooth'});
+    return;
+  }
+
+  const aura = data.aura_color || {};
+  let hex = (aura.hex || '').trim();
+  if(!/^#[0-9a-fA-F]{6}$/.test(hex)){
+    const key = (aura.name_en || '').toLowerCase();
+    hex = AURA_COLOR_FALLBACK[key] || '#c9a769';
+  }
+  const colorName = aura.name_local || aura.name_en || '';
+
+  html += `<div class="panel">
+    <div class="aura-swatch-wrap">
+      <div class="aura-swatch" style="background:${hex};box-shadow:0 0 34px 8px ${hex}66;"></div>
+      <div class="aura-swatch-name">${escapeHtml(colorName)}</div>
+      <div class="aura-swatch-hex">${escapeHtml(hex.toUpperCase())}</div>
+    </div>
+    ${aura.meaning ? `<div class="subcard"><p>${escapeHtml(aura.meaning)}</p></div>` : ''}
+    ${data.affirmation ? `<div class="aura-affirmation">“${escapeHtml(data.affirmation)}”</div>` : ''}
+  </div>`;
+
+  if(data.element){
+    html += cardSimple('🌙', t('auraElementLabel'), `<div class="subcard"><p>${escapeHtml(data.element)}</p></div>`);
+  }
+  if(data.energy_level){
+    html += cardSimple('⚡', t('auraEnergyLabel'), `<div class="subcard"><p>${escapeHtml(data.energy_level)}</p></div>`);
+  }
+  if(data.emotional_tone){
+    html += cardSimple('💗', t('auraEmotionLabel'), `<div class="subcard"><p>${escapeHtml(data.emotional_tone)}</p></div>`);
+  }
+  if(data.personality_glimpse){
+    html += cardSimple('🌟', t('auraPersonalityLabel'), `<div class="subcard"><p>${escapeHtml(data.personality_glimpse)}</p></div>`);
+  }
+
+  html += `<div class="panel disclaimer-box">
+    ${escapeHtml(data.disclaimer || defaultAuraDisclaimer())}
+  </div>`;
+
+  html += `<button class="btn btn-gold btn-block" onclick="resetAuraImage(); hideAuraResults(); clearAuraError(); window.scrollTo({top:0, behavior:'smooth'});">🔁 ${t('auraNewBtn')}</button>`;
+
+  box.innerHTML = html;
+  box.scrollIntoView({behavior:'smooth'});
+}
+
+function defaultAuraDisclaimer(){
+  return currentLang==='ur'
+    ? "یہ Aura reading ایک روایتی و روحانی تفریحی تصور ہے۔ اس کی کوئی سائنسی یا طبی بنیاد نہیں، اور یہ کسی حقیقی توانائی کے میدان، صحت یا نفسیاتی کیفیت کی پیمائش نہیں کرتی۔ اسے صرف تفریحی سمجھیں۔"
+    : "This Aura reading is a traditional and spiritual entertainment concept. It has no scientific or medical basis and does not measure any real energy field, health, or psychological state. Please treat it as entertainment only.";
 }
 
 /* ============================================================
